@@ -1,7 +1,6 @@
 using System.Threading.Tasks;
 using Grpc.Core;
 using Grpc.Health.V1;
-using System.Timers;
 
 namespace mikudos_lock_step_game_service
 {
