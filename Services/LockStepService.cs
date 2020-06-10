@@ -49,18 +49,17 @@ namespace mikudos_lock_step_game_service
                     }
                 }
                 PlayerStreams.Remove(authToken);
-                Console.WriteLine("close client connection");
+                Console.WriteLine($"close client connection: {authToken}");
                 context.CancellationToken.ThrowIfCancellationRequested();
                 return "";
             }, token);
 
             context.CancellationToken.Register(() =>
-                            {
-                                Console.WriteLine("request closed, close the read task");
-
-                                tokenSource.Cancel();
-                                readTask.Dispose();
-                            });
+            {
+                Console.WriteLine("request closed, close the read task");
+                tokenSource.Cancel();
+                readTask.Dispose();
+            });
             await readTask;
         }
     }
