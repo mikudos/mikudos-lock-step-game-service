@@ -20,7 +20,6 @@
 
     <ItemGroup>
         <Protobuf Include="proto/**/*.proto" />
-        <PackageReference Include="Grpc.AspNetCore" Version="$(GrpcDotNetPackageVersion)" />
     </ItemGroup>
 
 </Project>

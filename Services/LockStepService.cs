@@ -29,6 +29,7 @@ namespace mikudos_lock_step_game_service
             Console.WriteLine($"authToken:{authToken}");
 
             CancellationTokenSource tokenSource = new CancellationTokenSource();
+            CancellationToken token = tokenSource.Token;
             // Read incoming messages in a background task
             HelloRequest? lastMessageReceived = null;
             var readTask = Task.Run(async () =>
@@ -37,24 +38,21 @@ namespace mikudos_lock_step_game_service
                 {
                     PlayerStreams.Add(authToken, responseStream);
                 }
-                for (int i = 0; i < 100; i++)
+                while (!token.IsCancellationRequested && await requestStream.MoveNext(token))
                 {
-                    System.Threading.Thread.Sleep(1000);
-                    Console.WriteLine("Timer clocked");
-                }
-                await foreach (var message in requestStream.ReadAllAsync())
-                {
-                    lastMessageReceived = message;
+                    lastMessageReceived = requestStream.Current;
                     Console.WriteLine($"lastMessageReceived: {lastMessageReceived}");
-                    await PlayerStreams[authToken].WriteAsync(new HelloReply { Message = "hello" + message.Name });
-                    if (message.Name == "stop")
+                    await PlayerStreams[authToken].WriteAsync(new HelloReply { Message = "hello" + requestStream.Current.Name });
+                    if (requestStream.Current.Name == "stop")
                     {
                         break;
                     }
                 }
                 PlayerStreams.Remove(authToken);
+                Console.WriteLine("close client connection");
+                context.CancellationToken.ThrowIfCancellationRequested();
                 return "";
-            }, tokenSource.Token);
+            }, token);
 
             context.CancellationToken.Register(() =>
                             {
