@@ -25,5 +25,4 @@ RUN apk add --no-cache \
     icu
 WORKDIR /app
 COPY --from=builder /service .
-# ENTRYPOINT ["./service", "start"]
-ENTRYPOINT ["/bin/grpc_health_probe"]
+ENTRYPOINT ["./service", "start"]
