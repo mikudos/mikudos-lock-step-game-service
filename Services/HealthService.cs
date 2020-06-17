@@ -2,7 +2,7 @@ using System.Threading.Tasks;
 using Grpc.Core;
 using Grpc.Health.V1;
 
-namespace mikudos_lock_step_game_service
+namespace MikudosLockStepGameService
 {
     public class HealthImpl : Health.HealthBase
     {

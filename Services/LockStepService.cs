@@ -5,17 +5,22 @@ using System.Threading;
 using System.Threading.Tasks;
 using Grpc.Core;
 using Microsoft.Extensions.Logging;
+using MikudosLockStepGameService.Types;
+using MikudosLockStepGameService.Rx;
 using Lockstep;
 
-namespace mikudos_lock_step_game_service
+namespace MikudosLockStepGameService
 {
     public class LockStepImpl : LockStepService.LockStepServiceBase
     {
         public Dictionary<string, IServerStreamWriter<HelloReply>> PlayerStreams;
 
+        public CommonObservable<StepMessgae> requestO;
+
         public LockStepImpl()
         {
             PlayerStreams = new Dictionary<string, IServerStreamWriter<HelloReply>>();
+            this.requestO = new CommonObservable<StepMessgae>();
         }
         // Server side handler of the SayHello RPC
         public override Task<HelloReply> SayHello(HelloRequest request, ServerCallContext context)

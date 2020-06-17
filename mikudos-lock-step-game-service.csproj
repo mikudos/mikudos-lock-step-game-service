@@ -2,7 +2,7 @@
 
     <PropertyGroup>
         <TargetFramework>netcoreapp3.1</TargetFramework>
-        <RootNamespace>mikudos_lock_step_game_service</RootNamespace>
+        <RootNamespace>MikudosLockStepGameService</RootNamespace>
         <OutputType>Exe</OutputType>
     </PropertyGroup>
 

@@ -1,0 +1,5 @@
+
+namespace MikudosLockStepGameService.Game
+{
+
+}
