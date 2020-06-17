@@ -23,7 +23,8 @@ namespace MikudosLockStepGameService
 
             Console.WriteLine("Greeter server listening on port " + Port);
             Console.WriteLine("Press any key to stop the server...");
-            stepService.Start();
+            var res = stepService.Start();
+            // res.Wait();
             Console.ReadKey();
 
             server.ShutdownAsync().Wait();
