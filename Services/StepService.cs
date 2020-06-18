@@ -10,7 +10,7 @@ namespace MikudosLockStepGameService
     public class StepService
     {
         private LockStepImpl _lockStepService;
-        private CommonObserver<StepMessgae> stepperObserver;
+        private CommonObserver<StepMessageModel> stepperObserver;
         private const double UpdateInterval = 100 / 1000.0f; //frame rate = 10
         private DateTime _lastUpdateTimeStamp;
         private DateTime _startUpTimeStamp;
@@ -19,11 +19,14 @@ namespace MikudosLockStepGameService
         public StepService(LockStepImpl lockStepService)
         {
             this._lockStepService = lockStepService;
-            stepperObserver = new CommonObserver<StepMessgae>("stepper", StepMessageHandler);
+            stepperObserver = new CommonObserver<StepMessageModel>("stepper", StepMessageHandler);
             this._lockStepService.requestO.Subscribe(stepperObserver);
         }
 
-        public void StepMessageHandler(StepMessgae stepMessgae) { }
+        public void StepMessageHandler(StepMessageModel stepMessage)
+        {
+
+        }
 
         private void Update()
         {

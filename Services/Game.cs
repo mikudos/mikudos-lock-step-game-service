@@ -1,5 +1,7 @@
+using MikudosLockStepGameService.Logger;
+using MikudosLockStepGameService.Types;
 
-namespace MikudosLockStepGameService.Game
+namespace MikudosLockStepGameService
 {
 #if DEBUG_SHOW_INPUT
     public partial class PlayerInput : BaseFormater, IComponent {
@@ -66,10 +68,7 @@ namespace MikudosLockStepGameService.Game
 
     public class Game : BaseLogger
     {
-        private delegate void DealNetMsg(Player player, BaseMsg data);
-
-        private delegate BaseMsg ParseNetMsg(Deserializer reader);
-
+        private delegate void DealNetMsg(PlayerModel player, BaseMsg data);
 
         public const int MaxPlayerCount = 2;
 
@@ -112,7 +111,7 @@ namespace MikudosLockStepGameService.Game
 
 
         private Dictionary<long, byte> _userId2LocalId = new Dictionary<long, byte>();
-        public Player[] Players { get; private set; }
+        public PlayerModel[] Players { get; private set; }
 
 
         //hashcode 
@@ -122,8 +121,6 @@ namespace MikudosLockStepGameService.Game
 
         private const int MaxMsgIdx = (short)EMsgSC.EnumCount;
         private DealNetMsg[] allMsgDealFuncs = new DealNetMsg[MaxMsgIdx];
-        private ParseNetMsg[] allMsgParsers = new ParseNetMsg[MaxMsgIdx];
-
 
         private float _timeSinceLoaded;
         private float _firstFrameTimeStamp = 0;
@@ -138,7 +135,7 @@ namespace MikudosLockStepGameService.Game
 
         public int Seed { get; set; }
 
-        public void OnRecvPlayerGameData(Player player)
+        public void OnRecvPlayerGameData(PlayerModel player)
         {
             if (player == null || MaxPlayerCount <= player.LocalId || Players[player.LocalId] != player)
             {
@@ -203,14 +200,14 @@ namespace MikudosLockStepGameService.Game
 
         #region  life cycle
 
-        public void DoStart(int gameId, int gameType, int mapId, Player[] playerInfos, string gameHash)
+        public void DoStart(int gameId, int gameType, int mapId, PlayerModel[] playerInfos, string gameHash)
         {
+
             State = EGameState.Loading;
             Seed = LRandom.Range(1, 100000);
             Tick = 0;
             _timeSinceLoaded = 0;
             _firstFrameTimeStamp = 0;
-            RegisterMsgHandlers();
             Debug = new DebugInstance("Room" + GameId + ": ");
             var count = playerInfos.Length;
             GameType = gameType;
@@ -254,7 +251,7 @@ namespace MikudosLockStepGameService.Game
             DumpGameFrames();
         }
 
-        Player CreatePlayer(GamePlayerInfo playerInfo, byte localId)
+        PlayerModel CreatePlayer(GamePlayerInfo playerInfo, byte localId)
         {
             var player = Pool.Get<Player>();
             player.UserId = playerInfo.UserId;
@@ -361,7 +358,7 @@ namespace MikudosLockStepGameService.Game
             BorderTcp(EMsgSC.G2C_GameStartInfo, GameStartInfo);
         }
 
-        public void OnRecvMsg(Player player, Deserializer reader)
+        public void OnRecvMsg(PlayerModel player, Deserializer reader)
         {
             if (reader.IsEnd)
             {
@@ -400,57 +397,20 @@ namespace MikudosLockStepGameService.Game
             }
         }
 
-        void DealMsgHandlerError(Player player, string msg)
+        void DealMsgHandlerError(PlayerModel player, string msg)
         {
             LogError(msg);
             TickOut(player, 0);
         }
 
-        public void TickOut(Player player, int reason)
+        public void TickOut(PlayerModel player, int reason)
         {
             //_gameServer.TickOut(player, reason);
         }
 
-        private void RegisterMsgHandlers()
-        {
-            RegisterHandler(EMsgSC.C2G_PlayerInput, C2G_PlayerInput,
-                (reader) => { return ParseData<Msg_PlayerInput>(reader); });
-            RegisterHandler(EMsgSC.C2G_PlayerPing, C2G_PlayerPing,
-                (reader) => { return ParseData<Msg_C2G_PlayerPing>(reader); });
-            RegisterHandler(EMsgSC.C2G_HashCode, C2G_HashCode,
-                (reader) => { return ParseData<Msg_HashCode>(reader); });
-            RegisterHandler(EMsgSC.C2G_LoadingProgress, C2G_LoadingProgress,
-                (reader) => { return ParseData<Msg_C2G_LoadingProgress>(reader); });
-            RegisterHandler(EMsgSC.C2G_ReqMissFrame, C2G_ReqMissFrame,
-                (reader) => { return ParseData<Msg_ReqMissFrame>(reader); });
-            RegisterHandler(EMsgSC.C2G_RepMissFrameAck, C2G_RepMissFrameAck,
-                (reader) => { return ParseData<Msg_RepMissFrameAck>(reader); });
-        }
-
-        private void RegisterHandler(EMsgSC type, DealNetMsg func, ParseNetMsg parseFunc)
+        private void RegisterHandler(EMsgSC type, DealNetMsg func)
         {
             allMsgDealFuncs[(int)type] = func;
-            allMsgParsers[(int)type] = parseFunc;
-        }
-
-        T ParseData<T>(Deserializer reader) where T : BaseMsg, new()
-        {
-            T data = null;
-            try
-            {
-                data = reader.Parse<T>();
-                if (!reader.IsEnd)
-                {
-                    data = null;
-                }
-            }
-            catch (Exception e)
-            {
-                LogError("Parse Msg Error:" + e);
-                data = null;
-            }
-
-            return data;
         }
 
         public void BorderTcp(EMsgSC type, BaseMsg data)
@@ -722,7 +682,7 @@ namespace MikudosLockStepGameService.Game
         }
 
 
-        void C2G_HashCode(Player player, BaseMsg data)
+        void C2G_HashCode(PlayerModel player, BaseMsg data)
         {
             var hashInfo = data as Msg_HashCode;
             var id = player.LocalId;
@@ -780,7 +740,7 @@ namespace MikudosLockStepGameService.Game
         }
 
 
-        void C2G_ReqMissFrame(Player player, BaseMsg data)
+        void C2G_ReqMissFrame(PlayerModel player, BaseMsg data)
         {
             var reqMsg = data as Msg_ReqMissFrame;
             var nextCheckTick = reqMsg.StartTick;
@@ -801,14 +761,14 @@ namespace MikudosLockStepGameService.Game
             SendUdp(player, EMsgSC.G2C_RepMissFrame, msg, true);
         }
 
-        void C2G_RepMissFrameAck(Player player, BaseMsg data)
+        void C2G_RepMissFrameAck(PlayerModel player, BaseMsg data)
         {
             var msg = data as Msg_RepMissFrameAck;
             Log($"C2G_RepMissFrameAck missFrameTick:{msg.MissFrameTick}");
         }
 
 
-        void C2G_LoadingProgress(Player player, BaseMsg data)
+        void C2G_LoadingProgress(PlayerModel player, BaseMsg data)
         {
             if (State != EGameState.Loading) return;
             var msg = data as Msg_C2G_LoadingProgress;

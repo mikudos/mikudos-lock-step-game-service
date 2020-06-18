@@ -15,12 +15,12 @@ namespace MikudosLockStepGameService
     {
         public Dictionary<string, IServerStreamWriter<HelloReply>> PlayerStreams;
 
-        public CommonObservable<StepMessgae> requestO;
+        public CommonObservable<StepMessageModel> requestO;
 
         public LockStepImpl()
         {
             PlayerStreams = new Dictionary<string, IServerStreamWriter<HelloReply>>();
-            this.requestO = new CommonObservable<StepMessgae>();
+            this.requestO = new CommonObservable<StepMessageModel>();
         }
         // Server side handler of the SayHello RPC
         public override Task<HelloReply> SayHello(HelloRequest request, ServerCallContext context)

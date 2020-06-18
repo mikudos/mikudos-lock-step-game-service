@@ -3,9 +3,9 @@ using Lockstep;
 
 namespace MikudosLockStepGameService.Types
 {
-    public class StepMessgae
+    public class StepMessageModel
     {
-        public string PlayerId;
+        public long PlayerId;
         public HelloRequest Message;
     }
 }
