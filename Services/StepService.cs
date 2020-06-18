@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
+using Lockstep;
 using MikudosLockStepGameService.Types;
 using MikudosLockStepGameService.Rx;
 
@@ -23,9 +24,17 @@ namespace MikudosLockStepGameService
             this._lockStepService.requestO.Subscribe(stepperObserver);
         }
 
-        public void StepMessageHandler(StepMessageModel stepMessage)
+        public async void StepMessageHandler(StepMessageModel stepMessage)
         {
+            System.Console.WriteLine($"on subscribe stepMessage: {stepMessage}");
+            var playerId = stepMessage.PlayerId;
+            switch (stepMessage.Message.MsgType)
+            {
 
+                default:
+                    await _lockStepService.PlayerStreams[playerId].WriteAsync(new HelloReply { MsgType = MessageType.Pong, Message = "hello" + stepMessage.Message.Name });
+                    break;
+            }
         }
 
         private void Update()
@@ -45,7 +54,7 @@ namespace MikudosLockStepGameService
             //check frame inputs
             var fDeltaTime = (float)_deltaTime;
             var fTimeSinceStartUp = (float)_timeSinceStartUp;
-            System.Console.WriteLine("deltatime over, do update");
+            // System.Console.WriteLine("deltatime over, do update");
             // _game?.DoUpdate(fDeltaTime);
         }
 

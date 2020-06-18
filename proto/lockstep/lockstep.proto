@@ -9,8 +9,25 @@ service LockStepService {
   rpc SayStream(stream HelloRequest) returns (stream HelloReply) {}
 }
 
+enum MessageType {
+  Ping = 0;
+  Pong = 1;
+  ReqMissFrame = 2;
+  ReqMissFrameAck = 3;
+  RepMissFrame = 4;
+  HashCode = 5;
+  PlayerInput = 6;
+  FrameData = 7;
+}
+
 // The request message containing the user's name.
-message HelloRequest { string name = 1; }
+message HelloRequest {
+  MessageType msgType = 1;
+  string name = 2;
+}
 
 // The response message containing the greetings
-message HelloReply { string message = 1; }
+message HelloReply {
+  MessageType msgType = 1;
+  string message = 2;
+}

@@ -13,13 +13,13 @@ namespace MikudosLockStepGameService
 {
     public class LockStepImpl : LockStepService.LockStepServiceBase
     {
-        public Dictionary<string, IServerStreamWriter<HelloReply>> PlayerStreams;
+        public Dictionary<long, IServerStreamWriter<HelloReply>> PlayerStreams;
 
         public CommonObservable<StepMessageModel> requestO;
 
         public LockStepImpl()
         {
-            PlayerStreams = new Dictionary<string, IServerStreamWriter<HelloReply>>();
+            PlayerStreams = new Dictionary<long, IServerStreamWriter<HelloReply>>();
             this.requestO = new CommonObservable<StepMessageModel>();
         }
         // Server side handler of the SayHello RPC
@@ -32,6 +32,21 @@ namespace MikudosLockStepGameService
         {
             var authToken = context.RequestHeaders.Single(h => h.Key == "authentication").Value;
             Console.WriteLine($"authToken:{authToken}");
+            long playerID = 0L;
+            if (authToken != "")
+            {
+                playerID = 24L;
+            }
+            // TODO: check if authToken is validate
+            if (playerID == 0L)
+            {
+                await responseStream.WriteAsync(new HelloReply { Message = "Authentication Error" });
+                return;
+            }
+            else if (!PlayerStreams.ContainsKey(playerID))
+            {
+                PlayerStreams.Add(playerID, responseStream);
+            }
 
             CancellationTokenSource tokenSource = new CancellationTokenSource();
             CancellationToken token = tokenSource.Token;
@@ -39,22 +54,19 @@ namespace MikudosLockStepGameService
             HelloRequest? lastMessageReceived = null;
             var readTask = Task.Run(async () =>
             {
-                if (!PlayerStreams.ContainsKey(authToken))
-                {
-                    PlayerStreams.Add(authToken, responseStream);
-                }
                 while (!token.IsCancellationRequested && await requestStream.MoveNext(token))
                 {
+                    // Next the message to observable
+                    this.requestO.Notify(new StepMessageModel { PlayerId = playerID, Message = requestStream.Current });
                     lastMessageReceived = requestStream.Current;
                     Console.WriteLine($"lastMessageReceived: {lastMessageReceived}");
-                    await PlayerStreams[authToken].WriteAsync(new HelloReply { Message = "hello" + requestStream.Current.Name });
-                    if (requestStream.Current.Name == "stop")
-                    {
-                        break;
-                    }
+                    // if (requestStream.Current.Name == "stop")
+                    // {
+                    //     break;
+                    // }
                 }
-                PlayerStreams.Remove(authToken);
-                Console.WriteLine($"close client connection: {authToken}");
+                PlayerStreams.Remove(playerID);
+                Console.WriteLine($"close client connection: {playerID}");
                 context.CancellationToken.ThrowIfCancellationRequested();
                 return "";
             }, token);

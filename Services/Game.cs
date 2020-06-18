@@ -74,11 +74,6 @@ namespace MikudosLockStepGameService
 
         public int MapId { get; set; }
         public string GameHash { get; set; }
-
-        public IPEndInfo TcpEnd { get; set; }
-        public IPEndInfo UdpEnd { get; set; }
-
-        public EGameState State = EGameState.Idle;
         public int GameType { get; set; }
         public int GameId { get; set; }
 
