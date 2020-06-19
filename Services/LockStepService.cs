@@ -60,7 +60,7 @@ namespace MikudosLockStepGameService
                 while (!token.IsCancellationRequested && await requestStream.MoveNext(token))
                 {
                     // Next the message to observable
-                    this.requestO.Notify(new StepMessageModel { PlayerId = playerID, Message = requestStream.Current });
+                    this.requestO.Notify(new StepMessageModel(this) { PlayerId = playerID, Message = requestStream.Current });
                     lastMessageReceived = requestStream.Current;
                     Console.WriteLine($"lastMessageReceived: {lastMessageReceived}");
                     // if (requestStream.Current.Name == "stop")
