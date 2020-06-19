@@ -1,4 +1,5 @@
 using MikudosLockStepGameService.Util;
+using MikudosLockStepGameService.Services.Game;
 using Lockstep;
 
 namespace MikudosLockStepGameService.Types
@@ -9,7 +10,7 @@ namespace MikudosLockStepGameService.Types
         public string Account;
         public string LoginHash;
         public byte LocalId;
-        public Game Game;
+        public GameClass Game;
         public GameData GameData;
         public int GameId => Game?.GameId ?? -1;
 

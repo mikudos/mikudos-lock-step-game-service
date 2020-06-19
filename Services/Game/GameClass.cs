@@ -8,20 +8,23 @@ namespace MikudosLockStepGameService.Services.Game
 {
     public class GameClass : BaseLogger
     {
-        private static Dictionary<string, GameClass> _games;
-        public GameClass()
+        private static Dictionary<int, GameClass> _games;
+
+        public int GameId;
+        public GameClass(IConfiguration configuration)
         {
+
         }
 
-        public static GameClass GetGame(string key, IConfiguration configuration)
+        public static GameClass GetGame(int key, IConfiguration configuration)
         {
-            if (_games[key]== null && configuration== null)
+            if (_games[key] == null && configuration == null)
             {
                 throw new NullConfigurationException();
             }
             if (_games[key] == null)
             {
-                _games[key] = new GameClass();
+                _games[key] = new GameClass(configuration);
             }
             return _games[key];
         }

@@ -15,7 +15,7 @@ namespace MikudosLockStepGameService
         private LockStepImpl _lockStepService;
         private IConfiguration _configuration;
         private CommonObserver<StepMessageModel> stepperObserver;
-        private const double UpdateInterval = 100 / 1000.0f; //frame rate = 10
+        private double UpdateInterval;
         private DateTime _lastUpdateTimeStamp;
         private DateTime _startUpTimeStamp;
         private double _deltaTime;
@@ -24,6 +24,7 @@ namespace MikudosLockStepGameService
         {
             this._lockStepService = lockStepService;
             this._configuration = lockStepService._configuration;
+            UpdateInterval = _configuration.GetValue<int>("frame_interval", 100)/1000.0f; // default frame_interval = 100
             stepperObserver = new CommonObserver<StepMessageModel>("stepper", StepMessageHandler);
             this._lockStepService.requestO.Subscribe(stepperObserver);
         }

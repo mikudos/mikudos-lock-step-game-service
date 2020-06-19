@@ -9,21 +9,20 @@ namespace MikudosLockStepGameService
 {
     class Program
     {
-        const int Port = 50051;
-
         public static void Main(string[] args)
         {
             var env = Environment.GetEnvironmentVariable("DOT_NET_ENV");
             var builder = new ConfigurationBuilder();
             builder
-                .AddYamlFile("config/appsettings.yml", optional: false)
+                .AddYamlFile("config/appsettings.yml", optional: true)
                 .AddJsonFile($"config/appsettings.{env}.yml", optional: true);
             IConfiguration _conf = builder.Build();
             var lockStepService = new LockStepImpl(_conf);
+            int Port = _conf.GetValue<int>("port", 50051);
             Server server = new Server
             {
                 Services = { LockStepService.BindService(lockStepService) },
-                Ports = { new ServerPort("localhost", _conf.GetValue<int>("port", Port), ServerCredentials.Insecure) }
+                Ports = { new ServerPort("localhost", Port, ServerCredentials.Insecure) }
             };
             StepService stepService = new StepService(lockStepService);
             server.Start();
