@@ -33,6 +33,7 @@ namespace MikudosLockStepGameService.Services.Game
         public int _ServerTickDealy = 0;
         public int _tickSinceGameStart =>
             (int)((LTime.realtimeSinceStartupMS - _gameStartTimestampMs) / _configuration.GetValue<int>("frame_interval", 100) / 1000.0f);
+        private List<ServerFrame> _allHistoryFrames = new List<ServerFrame>(); //所有的历史帧
         public GameClass(IConfiguration configuration)
         {
             this._configuration = configuration;
@@ -89,22 +90,18 @@ namespace MikudosLockStepGameService.Services.Game
 
         private void DumpGameFrames()
         {
-            var msg = new Msg_RepMissFrame();
+            var msg = new MultiFrames();
             int count = System.Math.Min((Tick - 1), _allHistoryFrames.Count);
             if (count <= 0) return;
-            var writer = new Serializer();
-            GameStartInfo.Serialize(writer);
             var frames = new ServerFrame[count];
             for (int i = 0; i < count; i++)
             {
                 frames[i] = _allHistoryFrames[i];
-                Logging.Debug.Assert(frames[i] != null, "!!!!!!!!!!!!!!!!!");
+                Logger.Debug.Assert(frames[i] != null, "!!!!!!!!!!!!!!!!!");
             }
 
             msg.startTick = frames[0].tick;
             msg.frames = frames;
-            msg.Serialize(writer);
-            var bytes = Compressor.Compress(writer);
             var path = Path.Combine(AppDomain.CurrentDomain.BaseDirectory,
                 "../Record/" + System.DateTime.Now.ToString("yyyyMMddHHmmss") + "_" + GameType + "_" + GameId +
                 ".record");
@@ -115,7 +112,7 @@ namespace MikudosLockStepGameService.Services.Game
             }
 
             Log("Create Record " + path);
-            File.WriteAllBytes(path, bytes);
+            //File.WriteAllBytes(path, bytes);
         }
 
         private bool _CheckBorderServerFrame(bool isForce = false)
@@ -145,7 +142,7 @@ namespace MikudosLockStepGameService.Services.Game
             }
 
             //Debug.Log($" Border input {Tick} isUpdate:{isForce} _tickSinceGameStart:{_tickSinceGameStart}");
-            var msg = new Msg_ServerFrames();
+            var msg = new MultiFrames();
             int count = Tick < 2 ? Tick + 1 : 3;
             var frames = new ServerFrame[count];
             for (int i = 0; i < count; i++)
