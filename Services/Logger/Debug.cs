@@ -3,7 +3,7 @@ using System.Text;
 using System.Diagnostics;
 using System.IO;
 
-namespace MikudosLockStepGameService.Logger
+namespace MikudosLockStepGameService.Services.Logger
 {
     public class Debug
     {

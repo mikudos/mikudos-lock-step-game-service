@@ -1,6 +1,6 @@
 using System;
 
-namespace MikudosLockStepGameService.Logger
+namespace MikudosLockStepGameService.Services.Logger
 {
     public class BaseLogger
     {

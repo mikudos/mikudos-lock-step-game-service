@@ -2,7 +2,7 @@ using System;
 using System.Text;
 using System.Diagnostics;
 
-namespace MikudosLockStepGameService.Logger
+namespace MikudosLockStepGameService.Services.Logger
 {
     public static class Logger
     {

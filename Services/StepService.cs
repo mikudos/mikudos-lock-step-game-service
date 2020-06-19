@@ -3,14 +3,17 @@ using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using Lockstep;
+using Microsoft.Extensions.Configuration;
 using MikudosLockStepGameService.Types;
 using MikudosLockStepGameService.Rx;
+using MikudosLockStepGameService.Services.MessageHandlers;
 
 namespace MikudosLockStepGameService
 {
     public class StepService
     {
         private LockStepImpl _lockStepService;
+        private IConfiguration _configuration;
         private CommonObserver<StepMessageModel> stepperObserver;
         private const double UpdateInterval = 100 / 1000.0f; //frame rate = 10
         private DateTime _lastUpdateTimeStamp;
@@ -20,6 +23,7 @@ namespace MikudosLockStepGameService
         public StepService(LockStepImpl lockStepService)
         {
             this._lockStepService = lockStepService;
+            this._configuration = lockStepService._configuration;
             stepperObserver = new CommonObserver<StepMessageModel>("stepper", StepMessageHandler);
             this._lockStepService.requestO.Subscribe(stepperObserver);
         }
@@ -28,13 +32,12 @@ namespace MikudosLockStepGameService
         {
             System.Console.WriteLine($"on subscribe stepMessage: {stepMessage}");
             var playerId = stepMessage.PlayerId;
-            switch (stepMessage.Message.MsgType)
+            var reply = stepMessage.Handle();
+            if (reply == null)
             {
-
-                case MessageType.Ping:
-                    await _lockStepService.PlayerStreams[playerId].WriteAsync(new HelloReply { MsgType = MessageType.Pong, Message = "hello" + stepMessage.Message.Name });
-                    break;
+                return;
             }
+            await _lockStepService.PlayerStreams[playerId].WriteAsync(reply);
         }
 
         private void Update()

@@ -15,6 +15,7 @@
             <PrivateAssets>all</PrivateAssets>
         </PackageReference>
         <PackageReference Include="Microsoft.Extensions.Configuration" Version="3.1.0-preview2.19525.4" />
+        <PackageReference Include="NetEscapades.Configuration.Vault" Version="0.8.0" />
         <PackageReference Include="NetEscapades.Configuration.Yaml" Version="2.0.0" />
     </ItemGroup>
 
@@ -22,4 +23,7 @@
         <Protobuf Include="proto/**/*.proto" />
     </ItemGroup>
 
+    <ItemGroup>
+      <Folder Include="Services\Game\" />
+    </ItemGroup>
 </Project>

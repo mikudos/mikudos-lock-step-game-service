@@ -1,5 +1,5 @@
 using System;
-namespace MikudosLockStepGameService.Exceptions
+namespace MikudosLockStepGameService.Services.Exceptions
 {
     public class UnknownException : Exception
     {

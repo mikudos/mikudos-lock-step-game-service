@@ -3,6 +3,7 @@ using System.Threading.Tasks;
 using Grpc.Core;
 using Lockstep;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Configuration;
 
 namespace MikudosLockStepGameService
 {
@@ -12,11 +13,17 @@ namespace MikudosLockStepGameService
 
         public static void Main(string[] args)
         {
-            var lockStepService = new LockStepImpl();
+            var env = Environment.GetEnvironmentVariable("DOT_NET_ENV");
+            var builder = new ConfigurationBuilder();
+            builder
+                .AddYamlFile("config/appsettings.yml", optional: false)
+                .AddJsonFile($"config/appsettings.{env}.yml", optional: true);
+            IConfiguration _conf = builder.Build();
+            var lockStepService = new LockStepImpl(_conf);
             Server server = new Server
             {
                 Services = { LockStepService.BindService(lockStepService) },
-                Ports = { new ServerPort("localhost", Port, ServerCredentials.Insecure) }
+                Ports = { new ServerPort("localhost", _conf.GetValue<int>("port", Port), ServerCredentials.Insecure) }
             };
             StepService stepService = new StepService(lockStepService);
             server.Start();

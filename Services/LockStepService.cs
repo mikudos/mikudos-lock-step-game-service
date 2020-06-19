@@ -5,6 +5,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Grpc.Core;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Configuration;
 using MikudosLockStepGameService.Types;
 using MikudosLockStepGameService.Rx;
 using Lockstep;
@@ -13,12 +14,14 @@ namespace MikudosLockStepGameService
 {
     public class LockStepImpl : LockStepService.LockStepServiceBase
     {
+        public IConfiguration _configuration;
         public Dictionary<long, IServerStreamWriter<HelloReply>> PlayerStreams;
 
         public CommonObservable<StepMessageModel> requestO;
 
-        public LockStepImpl()
+        public LockStepImpl(IConfiguration configuration)
         {
+            _configuration = configuration;
             PlayerStreams = new Dictionary<long, IServerStreamWriter<HelloReply>>();
             this.requestO = new CommonObservable<StepMessageModel>();
         }

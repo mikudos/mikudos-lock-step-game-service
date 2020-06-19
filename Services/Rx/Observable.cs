@@ -1,6 +1,6 @@
 using System;
 using System.Collections.Generic;
-using MikudosLockStepGameService.Exceptions;
+using MikudosLockStepGameService.Services.Exceptions;
 
 namespace MikudosLockStepGameService.Rx
 {
