@@ -20,6 +20,15 @@ enum MessageType {
   FrameData = 7;
 }
 
+enum EGameState {
+    Idle = 0;
+    Loading = 1;
+    PartLoaded = 2;
+    Playing = 3;
+    PartFinished = 4;
+    FinishAll = 5;
+}
+
 // The request message containing the user's name.
 message HelloRequest {
   MessageType msgType = 1;

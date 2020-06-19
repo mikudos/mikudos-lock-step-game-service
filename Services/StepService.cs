@@ -1,3 +1,10 @@
+/* 
+ * Author Julian Yue
+ * 
+ * StepService Handle all client Message, and reply the result.
+ * With Public Task Start method, StepService starting iterator. The Server Frame will be update with Player input from lastest update, when Every UpdateInterval arival.
+ * 
+ */
 using System;
 using System.Collections.Generic;
 using System.Threading;
@@ -32,7 +39,7 @@ namespace MikudosLockStepGameService
         public async void StepMessageHandler(StepMessageModel stepMessage)
         {
             System.Console.WriteLine($"on subscribe stepMessage: {stepMessage}");
-            var playerId = stepMessage.PlayerId;
+            long playerId = stepMessage.PlayerId;
             var reply = stepMessage.Handle();
             if (reply == null)
             {

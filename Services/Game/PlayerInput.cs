@@ -4,37 +4,37 @@ using System.IO;
 
 namespace MikudosLockStepGameService.Services.Game
 {
-#if DEBUG_SHOW_INPUT
-    public partial class PlayerInput : BaseFormater, IComponent {
-        public LVector2 mousePos;
-        public LVector2 inputUV;
+//#if DEBUG_SHOW_INPUT
+    public partial class PlayerInput {
+        public FixVector2 mousePos;
+        public FixVector2 inputUV;
         public bool isInputFire;
         public int skillId;
         public bool isSpeedUp;
 
-        public override void Serialize(Serializer writer){
-            writer.Write(mousePos);
-            writer.Write(inputUV);
-            writer.Write(isInputFire);
-            writer.Write(skillId);
-            writer.Write(isSpeedUp);
-        }
+        //public override void Serialize(Serializer writer){
+        //    writer.Write(mousePos);
+        //    writer.Write(inputUV);
+        //    writer.Write(isInputFire);
+        //    writer.Write(skillId);
+        //    writer.Write(isSpeedUp);
+        //}
 
         public void Reset(){
-            mousePos = LVector2.zero;
-            inputUV = LVector2.zero;
+            mousePos = FixVector2.Zero;
+            inputUV = FixVector2.Zero;
             isInputFire = false;
             skillId = 0;
             isSpeedUp = false;
         }
 
-        public override void Deserialize(Deserializer reader){
-            mousePos = reader.ReadLVector2();
-            inputUV = reader.ReadLVector2();
-            isInputFire = reader.ReadBoolean();
-            skillId = reader.ReadInt32();
-            isSpeedUp = reader.ReadBoolean();
-        }
+        //public override void Deserialize(Deserializer reader){
+        //    mousePos = reader.ReadLVector2();
+        //    inputUV = reader.ReadLVector2();
+        //    isInputFire = reader.ReadBoolean();
+        //    skillId = reader.ReadInt32();
+        //    isSpeedUp = reader.ReadBoolean();
+        //}
 
         public static PlayerInput Empty = new PlayerInput();
 
@@ -65,5 +65,5 @@ namespace MikudosLockStepGameService.Services.Game
             };
         }
     }
-#endif
+//#endif
 }
