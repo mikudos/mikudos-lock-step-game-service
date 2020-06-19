@@ -14,8 +14,15 @@ CTestTestfile.cmake
 # cs bin
 bin
 # cs obj
-obj
-
+obj/
+*.DS_Store
+.vs/
+.vscode/
+*.tmp
+*.tmp_proj
+*.log
 
 # cs Debug
 Debug
+
+*.sln

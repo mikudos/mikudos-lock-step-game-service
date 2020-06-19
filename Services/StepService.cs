@@ -31,7 +31,7 @@ namespace MikudosLockStepGameService
             switch (stepMessage.Message.MsgType)
             {
 
-                default:
+                case MessageType.Ping:
                     await _lockStepService.PlayerStreams[playerId].WriteAsync(new HelloReply { MsgType = MessageType.Pong, Message = "hello" + stepMessage.Message.Name });
                     break;
             }
