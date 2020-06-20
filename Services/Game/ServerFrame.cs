@@ -6,9 +6,9 @@ namespace MikudosLockStepGameService.Services.Game
     {
         public byte[] inputDatas; //包含玩家的输入& 游戏输入
         public int tick;
-        public PlayerInput[] _inputs;
+        public Msg_PlayerInput[] _inputs;
 
-        public PlayerInput[] Inputs
+        public Msg_PlayerInput[] Inputs
         {
             get { return _inputs; }
             set
@@ -56,7 +56,7 @@ namespace MikudosLockStepGameService.Services.Game
             if (tick != frame.tick) return false;
             for (int i = _inputs.Length - 1; i >= 0; i--)
             {
-                if (_inputs[i].Equals(frame.Inputs[i]) )
+                if (_inputs[i].Equals(frame.Inputs[i]))
                 {
                     return false;
                 }

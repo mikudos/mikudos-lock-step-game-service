@@ -3,6 +3,7 @@ using System.IO;
 using Lockstep;
 using System.Collections.Generic;
 using Microsoft.Extensions.Configuration;
+using MikudosLockStepGameService.Rx;
 using MikudosLockStepGameService.Util;
 using MikudosLockStepGameService.Types;
 using MikudosLockStepGameService.Services.Exceptions;
@@ -12,8 +13,10 @@ namespace MikudosLockStepGameService.Services.Game
 {
     public class GameClass : BaseLogger
     {
-        private static Dictionary<ushort, GameClass> _games;
-
+        private static Dictionary<ushort, GameClass> _games = new Dictionary<ushort, GameClass>();
+        private static Dictionary<long, ushort> _playerGameMap = new Dictionary<long, ushort>();
+        public CommonObservable<BorderMessageModel> borderMessageO;
+        public CommonObservable<ResponseModel> responseMessageO;
         private IConfiguration _configuration;
         public int GameId;
         public int MapId { get; set; }
@@ -38,6 +41,8 @@ namespace MikudosLockStepGameService.Services.Game
         {
             this._configuration = configuration;
             MaxPlayerCount = configuration.GetValue("max_player_count", 100);
+            this.borderMessageO = new CommonObservable<BorderMessageModel>();
+            this.responseMessageO = new CommonObservable<ResponseModel>();
         }
 
         public static GameClass GetGame(ushort key, IConfiguration configuration)
@@ -152,7 +157,7 @@ namespace MikudosLockStepGameService.Services.Game
 
             msg.startTick = frames[0].tick;
             msg.frames = frames;
-            BorderUdp(EMsgSC.G2C_FrameData, msg);
+            this.borderMessageO.Notify(new BorderMessageModel());
             if (_firstFrameTimeStamp <= 0)
             {
                 _firstFrameTimeStamp = _timeSinceLoaded;
@@ -161,7 +166,7 @@ namespace MikudosLockStepGameService.Services.Game
             if (_gameStartTimestampMs < 0)
             {
                 _gameStartTimestampMs =
-                    LTime.realtimeSinceStartupMS + NetworkDefine.UPDATE_DELTATIME * _ServerTickDealy;
+                    LTime.realtimeSinceStartupMS + _configuration.GetValue<int>("frame_interval", 100) * _ServerTickDealy;
             }
 
             Tick++;
@@ -193,6 +198,11 @@ namespace MikudosLockStepGameService.Services.Game
             }
 
             return frame;
+        }
+
+        public ushort GetGameIdWithPlayerId(long playerId)
+        {
+            return _playerGameMap[playerId];
         }
     }
 }

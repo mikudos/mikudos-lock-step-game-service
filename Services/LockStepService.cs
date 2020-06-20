@@ -31,7 +31,7 @@ namespace MikudosLockStepGameService
             return Task.FromResult(new HelloReply { Message = "Hello " + request.Name });
         }
 
-        public override async Task SayStream(IAsyncStreamReader<HelloRequest> requestStream, IServerStreamWriter<HelloReply> responseStream, ServerCallContext context)
+        public override async Task LockStepStream(IAsyncStreamReader<HelloRequest> requestStream, IServerStreamWriter<HelloReply> responseStream, ServerCallContext context)
         {
             var authToken = context.RequestHeaders.Single(h => h.Key == "authentication").Value;
             Console.WriteLine($"authToken:{authToken}");

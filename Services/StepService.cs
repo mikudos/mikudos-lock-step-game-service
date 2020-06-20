@@ -2,7 +2,9 @@
  * Author Julian Yue
  * 
  * StepService Handle all client Message, and reply the result.
- * With Public Task Start method, StepService starting iterator. The Server Frame will be update with Player input from lastest update, when Every UpdateInterval arival.
+ * With Public Task Start method, StepService starting iterator. 
+ * The Server Frame will be update with Player input from lastest update, when Every UpdateInterval arival.
+ * 
  * 
  */
 using System;
@@ -31,7 +33,7 @@ namespace MikudosLockStepGameService
         {
             this._lockStepService = lockStepService;
             this._configuration = lockStepService._configuration;
-            UpdateInterval = _configuration.GetValue<int>("frame_interval", 100)/1000.0f; // default frame_interval = 100
+            UpdateInterval = _configuration.GetValue<int>("frame_interval", 100) / 1000.0f; // default frame_interval = 100
             stepperObserver = new CommonObserver<StepMessageModel>("stepper", StepMessageHandler);
             this._lockStepService.requestO.Subscribe(stepperObserver);
         }

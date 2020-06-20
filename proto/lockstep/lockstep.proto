@@ -6,10 +6,11 @@ package lockstep;
 service LockStepService {
   // Sends a greeting
   rpc SayHello(HelloRequest) returns (HelloReply) {}
-  rpc SayStream(stream HelloRequest) returns (stream HelloReply) {}
+  rpc LoadingProgress(HelloRequest) returns (HelloReply) {}
+  rpc LockStepStream(stream HelloRequest) returns (stream HelloReply) {}
 }
 
-enum MessageType {
+enum EMessageType {
   Ping = 0;
   Pong = 1;
   ReqMissFrame = 2;
@@ -21,22 +22,34 @@ enum MessageType {
 }
 
 enum EGameState {
-    Idle = 0;
-    Loading = 1;
-    PartLoaded = 2;
-    Playing = 3;
-    PartFinished = 4;
-    FinishAll = 5;
+  Idle = 0;
+  Loading = 1;
+  PartLoaded = 2;
+  Playing = 3;
+  PartFinished = 4;
+  FinishAll = 5;
 }
+
+message MGameInput {}
 
 // The request message containing the user's name.
 message HelloRequest {
-  MessageType msgType = 1;
+  EMessageType msgType = 1;
   string name = 2;
 }
 
 // The response message containing the greetings
 message HelloReply {
-  MessageType msgType = 1;
+  EMessageType msgType = 1;
   string message = 2;
+}
+
+message StepRequest {
+  EMessageType msgType = 1;
+  MGameInput gameInput = 2;
+}
+
+message StepResponse {
+  EMessageType msgType = 1;
+  repeated MGameInput gameInput = 2;
 }

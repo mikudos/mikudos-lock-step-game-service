@@ -11,7 +11,7 @@ namespace MikudosLockStepGameService.Services.MessageHandlers
 
         public HelloReply Handle(long playerId, HelloRequest message)
         {
-            return new HelloReply { MsgType = MessageType.Pong, Message = "hello" + message.Name };
+            return new HelloReply { MsgType = EMessageType.Pong, Message = "hello" + message.Name };
         }
     }
 }
