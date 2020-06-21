@@ -3,8 +3,11 @@
  * 
  * StepService Handle all client Message, and reply the result.
  * With Public Task Start method, StepService starting iterator. 
- * The Server Frame will be update with Player input from lastest update, when Every UpdateInterval arival.
  * 
+ * Update will check UpdateInterval, every interval arival, StepService will inform Game service to do update
+ * The Server Frame will be update with Player input from lastest update.
+ * 
+ * Every Server Frame updated, StepService will response then.
  * 
  */
 using System;
@@ -16,6 +19,7 @@ using Microsoft.Extensions.Configuration;
 using MikudosLockStepGameService.Types;
 using MikudosLockStepGameService.Rx;
 using MikudosLockStepGameService.Services.MessageHandlers;
+using MikudosLockStepGameService.Services.Game;
 
 namespace MikudosLockStepGameService
 {
@@ -24,11 +28,13 @@ namespace MikudosLockStepGameService
         private LockStepImpl _lockStepService;
         private IConfiguration _configuration;
         private CommonObserver<StepMessageModel> stepperObserver;
+        private CommonObserver<BorderMessageModel> gameFrameObserver;
         private double UpdateInterval;
         private DateTime _lastUpdateTimeStamp;
         private DateTime _startUpTimeStamp;
         private double _deltaTime;
         private double _timeSinceStartUp;
+        private GameClass _game;
         public StepService(LockStepImpl lockStepService)
         {
             this._lockStepService = lockStepService;
@@ -36,6 +42,16 @@ namespace MikudosLockStepGameService
             UpdateInterval = _configuration.GetValue<int>("frame_interval", 100) / 1000.0f; // default frame_interval = 100
             stepperObserver = new CommonObserver<StepMessageModel>("stepper", StepMessageHandler);
             this._lockStepService.requestO.Subscribe(stepperObserver);
+            gameFrameObserver = new CommonObserver<BorderMessageModel>("border", BorderMessageHandler);
+            this._game.borderMessageO.Subscribe(gameFrameObserver);
+        }
+
+        public async void BorderMessageHandler(BorderMessageModel borderMessage)
+        {
+            foreach (var (_, stream) in _lockStepService.PlayerStreams)
+            {
+                await stream.WriteAsync(new HelloReply());
+            }
         }
 
         public async void StepMessageHandler(StepMessageModel stepMessage)
