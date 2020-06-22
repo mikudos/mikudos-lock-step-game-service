@@ -12,12 +12,12 @@ using Lockstep;
 
 namespace MikudosLockStepGameService
 {
-    public class LockStepImpl : LockStepService.LockStepServiceBase
+    public class LockStepImpl : LockStepService.LockStepServiceBase, ILockStepImpl
     {
-        public IConfiguration _configuration;
-        public Dictionary<long, IServerStreamWriter<HelloReply>> PlayerStreams;
+        public IConfiguration _configuration { get; private set; }
+        public Dictionary<long, IServerStreamWriter<HelloReply>> PlayerStreams { get; private set; }
 
-        public CommonObservable<StepMessageModel> requestO;
+        public CommonObservable<StepMessageModel> requestO { get; private set; }
 
         public LockStepImpl(IConfiguration configuration)
         {

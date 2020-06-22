@@ -11,19 +11,19 @@ using MikudosLockStepGameService.Services.Logger;
 
 namespace MikudosLockStepGameService.Services.Game
 {
-    public class GameClass : BaseLogger
+    public class GameClass : BaseLogger, IGameClass
     {
         private static Dictionary<ushort, GameClass> _games = new Dictionary<ushort, GameClass>();
         private static Dictionary<long, ushort> _playerGameMap = new Dictionary<long, ushort>();
         public CommonObservable<BorderMessageModel> borderMessageO;
         public CommonObservable<ResponseModel> responseMessageO;
         private IConfiguration _configuration;
-        public int GameId;
+        public int GameId { get; private set; }
         public int MapId { get; set; }
         public int GameType { get; set; }
         public string GameHash { get; set; }
         public string Name { get; set; }
-        public int Tick = 0;
+        public int Tick { get; private set; } = 0;
         public int Seed { get; set; }
         public EGameState State = EGameState.Idle;
         private Dictionary<long, byte> _userId2LocalId = new Dictionary<long, byte>();

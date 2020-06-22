@@ -20,12 +20,13 @@ using MikudosLockStepGameService.Types;
 using MikudosLockStepGameService.Rx;
 using MikudosLockStepGameService.Services.MessageHandlers;
 using MikudosLockStepGameService.Services.Game;
+using System.IO;
 
 namespace MikudosLockStepGameService
 {
     public class StepService
     {
-        private LockStepImpl _lockStepService;
+        private ILockStepImpl _lockStepService;
         private IConfiguration _configuration;
         private CommonObserver<StepMessageModel> stepperObserver;
         private CommonObserver<BorderMessageModel> gameFrameObserver;
@@ -34,8 +35,8 @@ namespace MikudosLockStepGameService
         private DateTime _startUpTimeStamp;
         private double _deltaTime;
         private double _timeSinceStartUp;
-        private GameClass _game;
-        public StepService(LockStepImpl lockStepService)
+        private IGameClass _game;
+        public StepService(ILockStepImpl lockStepService)
         {
             this._lockStepService = lockStepService;
             this._configuration = lockStepService._configuration;
@@ -43,7 +44,7 @@ namespace MikudosLockStepGameService
             stepperObserver = new CommonObserver<StepMessageModel>("stepper", StepMessageHandler);
             this._lockStepService.requestO.Subscribe(stepperObserver);
             gameFrameObserver = new CommonObserver<BorderMessageModel>("border", BorderMessageHandler);
-            this._game.borderMessageO.Subscribe(gameFrameObserver);
+            // this._game.borderMessageO.Subscribe(gameFrameObserver);
         }
 
         public async void BorderMessageHandler(BorderMessageModel borderMessage)
@@ -56,6 +57,11 @@ namespace MikudosLockStepGameService
 
         public async void StepMessageHandler(StepMessageModel stepMessage)
         {
+            byte[] byteArr = new byte[Google.Protobuf.CodedOutputStream.DefaultBufferSize];
+            var stream = new Google.Protobuf.CodedOutputStream(byteArr);
+            stepMessage.Message.WriteTo(stream);
+            stream.Dispose();
+
             System.Console.WriteLine($"on subscribe stepMessage: {stepMessage}");
             long playerId = stepMessage.PlayerId;
             var reply = stepMessage.Handle();

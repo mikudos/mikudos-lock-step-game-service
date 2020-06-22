@@ -4,8 +4,9 @@ using System.IO;
 
 namespace MikudosLockStepGameService.Services.Game
 {
-//#if DEBUG_SHOW_INPUT
-    public partial class PlayerInput {
+    //#if DEBUG_SHOW_INPUT
+    public partial class PlayerInput
+    {
         public FixVector2 mousePos;
         public FixVector2 inputUV;
         public bool isInputFire;
@@ -20,7 +21,8 @@ namespace MikudosLockStepGameService.Services.Game
         //    writer.Write(isSpeedUp);
         //}
 
-        public void Reset(){
+        public void Reset()
+        {
             mousePos = FixVector2.Zero;
             inputUV = FixVector2.Zero;
             isInputFire = false;
@@ -38,13 +40,15 @@ namespace MikudosLockStepGameService.Services.Game
 
         public static PlayerInput Empty = new PlayerInput();
 
-        public override bool Equals(object obj){
+        public override bool Equals(object obj)
+        {
             if (ReferenceEquals(this, obj)) return true;
             var other = obj as PlayerInput;
             return Equals(other);
         }
 
-        public bool Equals(PlayerInput other){
+        public bool Equals(PlayerInput other)
+        {
             if (other == null) return false;
             if (mousePos != other.mousePos) return false;
             if (inputUV != other.inputUV) return false;
@@ -54,9 +58,16 @@ namespace MikudosLockStepGameService.Services.Game
             return true;
         }
 
-        public PlayerInput Clone(){
+        public override int GetHashCode()
+        {
+            return 0;
+        }
+
+        public PlayerInput Clone()
+        {
             var tThis = this;
-            return new PlayerInput() {
+            return new PlayerInput()
+            {
                 mousePos = tThis.mousePos,
                 inputUV = tThis.inputUV,
                 isInputFire = tThis.isInputFire,
@@ -65,5 +76,5 @@ namespace MikudosLockStepGameService.Services.Game
             };
         }
     }
-//#endif
+    //#endif
 }
