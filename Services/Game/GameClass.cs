@@ -13,8 +13,8 @@ namespace MikudosLockStepGameService.Services.Game
 {
     public class GameClass : BaseLogger, IGameClass
     {
-        private static Dictionary<ushort, GameClass> _games = new Dictionary<ushort, GameClass>();
-        private static Dictionary<long, ushort> _playerGameMap = new Dictionary<long, ushort>();
+        public static Dictionary<ushort, GameClass> AllGames { get; } = new Dictionary<ushort, GameClass>();
+        public static Dictionary<long, ushort> PlayerGameMap = new Dictionary<long, ushort>();
         public static CommonObservable<BorderMessageModel> borderMessageO { get; private set; } = new CommonObservable<BorderMessageModel>();
         public static CommonObservable<ResponseModel> responseMessageO { get; private set; } = new CommonObservable<ResponseModel>();
         private IConfiguration _configuration;
@@ -45,15 +45,15 @@ namespace MikudosLockStepGameService.Services.Game
 
         public static GameClass GetGame(ushort key, IConfiguration configuration)
         {
-            if (_games[key] == null && configuration == null)
+            if (AllGames[key] == null && configuration == null)
             {
                 throw new NullConfigurationException();
             }
-            if (_games[key] == null)
+            if (AllGames[key] == null)
             {
-                _games[key] = new GameClass(configuration) { GameId = key };
+                AllGames[key] = new GameClass(configuration) { GameId = key };
             }
-            return _games[key];
+            return AllGames[key];
         }
 
         public void DoStart(int gameType, int mapId, PlayerModel[] playerInfos, string gameHash)
@@ -200,7 +200,7 @@ namespace MikudosLockStepGameService.Services.Game
 
         public ushort GetGameIdWithPlayerId(long playerId)
         {
-            return _playerGameMap[playerId];
+            return PlayerGameMap[playerId];
         }
     }
 }

@@ -8,8 +8,8 @@ namespace MikudosLockStepGameService.Types
     [DebuggerDisplay("{" + nameof(GetDebuggerDisplay) + "(),nq}")]
     public class BorderMessageModel
     {
-        public long? PlayerId;
-        public HelloRequest Message;
+        public ushort GameId;
+        public HelloReply Message;
 
         public BorderMessageModel()
         {
@@ -17,7 +17,7 @@ namespace MikudosLockStepGameService.Types
 
         public override string ToString()
         {
-            return String.Format("stepMessage from: {0}, type: {1}", PlayerId, Message.MsgType);
+            return String.Format("stepMessage of game: {0}, type: {1}", GameId, Message.MsgType);
         }
         private string GetDebuggerDisplay()
         {

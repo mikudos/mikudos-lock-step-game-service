@@ -24,7 +24,7 @@ using System.IO;
 
 namespace MikudosLockStepGameService
 {
-    public class StepService
+    public sealed class StepService
     {
         private ILockStepImpl _lockStepService;
         private IConfiguration _configuration;
@@ -47,9 +47,10 @@ namespace MikudosLockStepGameService
             gameFrameObserver = new CommonObserver<BorderMessageModel>("border", BorderMessageHandler);
             GameClass.borderMessageO.Subscribe(gameFrameObserver);
             responseObserver = new CommonObserver<ResponseModel>("response", ResponseMessageHandler);
+            GameClass.responseMessageO.Subscribe(responseObserver);
         }
 
-        public async void ResponseMessageHandler(ResponseModel responseMessage)
+        private async void ResponseMessageHandler(ResponseModel responseMessage)
         {
             foreach (var (pid, stream) in _lockStepService.PlayerStreams)
             {
@@ -59,15 +60,17 @@ namespace MikudosLockStepGameService
             }
         }
 
-        public async void BorderMessageHandler(BorderMessageModel borderMessage)
+        private async void BorderMessageHandler(BorderMessageModel borderMessage)
         {
-            foreach (var (_, stream) in _lockStepService.PlayerStreams)
+            foreach (var (playerId, stream) in _lockStepService.PlayerStreams)
             {
-                await stream.WriteAsync(new HelloReply());
+                if (GameClass.PlayerGameMap[playerId] != borderMessage.GameId)
+                    continue;
+                await stream.WriteAsync(borderMessage.Message);
             }
         }
 
-        public async void StepMessageHandler(StepMessageModel stepMessage)
+        private async void StepMessageHandler(StepMessageModel stepMessage)
         {
             byte[] byteArr = new byte[Google.Protobuf.CodedOutputStream.DefaultBufferSize];
             var stream = new Google.Protobuf.CodedOutputStream(byteArr);
