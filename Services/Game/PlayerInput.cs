@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using Lockstep;
 
 namespace MikudosLockStepGameService.Services.Game
 {
@@ -21,6 +22,14 @@ namespace MikudosLockStepGameService.Services.Game
         //    writer.Write(isSpeedUp);
         //}
 
+        public PlayerInput(MGameInput input)
+        {
+            isInputFire = input.IsInputFire;
+            skillId = input.SkillId;
+            isSpeedUp = input.IsSpeedUp;
+            mousePos = new FixVector2(input.MousePos[0], input.MousePos[1]);
+        }
+
         public void Reset()
         {
             mousePos = FixVector2.Zero;
@@ -38,7 +47,7 @@ namespace MikudosLockStepGameService.Services.Game
         //    isSpeedUp = reader.ReadBoolean();
         //}
 
-        public static PlayerInput Empty = new PlayerInput();
+        public static PlayerInput Empty = new PlayerInput(new MGameInput());
 
         public override bool Equals(object obj)
         {
@@ -66,7 +75,7 @@ namespace MikudosLockStepGameService.Services.Game
         public PlayerInput Clone()
         {
             var tThis = this;
-            return new PlayerInput()
+            return new PlayerInput(new MGameInput())
             {
                 mousePos = tThis.mousePos,
                 inputUV = tThis.inputUV,

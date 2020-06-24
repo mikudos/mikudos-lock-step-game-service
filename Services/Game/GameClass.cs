@@ -16,7 +16,6 @@ namespace MikudosLockStepGameService.Services.Game
         public static Dictionary<ushort, IGameClass> AllGames { get; } = new Dictionary<ushort, IGameClass>();
         public static Dictionary<long, ushort> PlayerGameMap = new Dictionary<long, ushort>();
         public static CommonObservable<BorderMessageModel> borderMessageO { get; private set; } = new CommonObservable<BorderMessageModel>();
-        public static CommonObservable<ResponseModel> responseMessageO { get; private set; } = new CommonObservable<ResponseModel>();
         private IConfiguration _configuration;
         public int GameId { get; private set; }
         public int MapId { get; set; }

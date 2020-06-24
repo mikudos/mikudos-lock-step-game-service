@@ -4,3 +4,4 @@ port: 50052
 max_scene_count: 10
 frame_interval: 66
 max_player_count: 100
+scene_player_count: 4

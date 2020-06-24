@@ -1,21 +1,18 @@
 ﻿using System;
 using Lockstep;
 using Microsoft.Extensions.Configuration;
-using MikudosLockStepGameService.Services.Game;
+using MikudosLockStepGameService.Types;
 
 namespace MikudosLockStepGameService.Services.MessageHandlers
 {
-    public class InputHandler : IHandler
+    public class ReqMissFrameHandler: IHandler
     {
-        public InputHandler(IConfiguration configuration)
+        public ReqMissFrameHandler(IConfiguration configuration)
         {
         }
 
         public MStepRes Handle(long playerId, MStepReq message)
         {
-            PlayerInput input = new PlayerInput(message.GameInput);
-            IGameClass game = GameClass.GetGame(1);
-
             return new MStepRes { MsgType = EResType.Pong };
         }
     }

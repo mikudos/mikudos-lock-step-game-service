@@ -16,12 +16,14 @@ enum EMessageType {
   ReqMissFrameAck = 2;
   HashCode = 3;
   PlayerInput = 4;
+  Begin = 5;
 }
 
 enum EResType {
   Pong = 0;
   StepResponse = 1;
   ResMissFrame = 2;
+  AllReady = 3;
 }
 
 enum EGameState {
@@ -33,26 +35,39 @@ enum EGameState {
   FinishAll = 5;
 }
 
-message MGameInput {}
+message MGameInput {
+  bool IsInputFire = 1;
+  int32 SkillId = 2;
+  bool IsSpeedUp = 3;
+  repeated int32 MousePos = 4;
+  repeated int32 InputUV = 5;
+}
+
+message MPlayerGameInput {
+  int32 ActorId = 1;
+  int32 Tick = 2;
+  repeated MGameInput Commands = 3;
+  bool IsMiss = 4;
+}
 
 // The request message containing the user's name.
 message MHelloReq {
-  EMessageType msgType = 1;
-  string name = 2;
+  EMessageType MsgType = 1;
+  string Name = 2;
 }
 
 // The response message containing the greetings
 message MHelloReply {
-  EMessageType msgType = 1;
-  string message = 2;
+  EMessageType MsgType = 1;
+  string Message = 2;
 }
 
 message MStepReq {
-  EMessageType msgType = 1;
-  MGameInput gameInput = 2;
+  EMessageType MsgType = 1;
+  MGameInput GameInput = 2;
 }
 
 message MStepRes {
-  EResType msgType = 1;
-  repeated MGameInput gameInput = 2;
+  EResType MsgType = 1;
+  repeated MPlayerGameInput PlayerGameInputs = 2;
 }
