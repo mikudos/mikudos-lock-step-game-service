@@ -30,6 +30,7 @@ namespace MikudosLockStepGameService
         private IConfiguration _configuration;
         private CommonObserver<StepMessageModel> stepperObserver;
         private CommonObserver<BorderMessageModel> gameFrameObserver;
+        private CommonObserver<ResponseModel> responseObserver;
         private double UpdateInterval;
         private DateTime _lastUpdateTimeStamp;
         private DateTime _startUpTimeStamp;
@@ -44,7 +45,18 @@ namespace MikudosLockStepGameService
             stepperObserver = new CommonObserver<StepMessageModel>("stepper", StepMessageHandler);
             this._lockStepService.requestO.Subscribe(stepperObserver);
             gameFrameObserver = new CommonObserver<BorderMessageModel>("border", BorderMessageHandler);
-            // this._game.borderMessageO.Subscribe(gameFrameObserver);
+            GameClass.borderMessageO.Subscribe(gameFrameObserver);
+            responseObserver = new CommonObserver<ResponseModel>("response", ResponseMessageHandler);
+        }
+
+        public async void ResponseMessageHandler(ResponseModel responseMessage)
+        {
+            foreach (var (pid, stream) in _lockStepService.PlayerStreams)
+            {
+                if (pid != responseMessage.PlayerId)
+                    continue;
+                await stream.WriteAsync(responseMessage.Message);
+            }
         }
 
         public async void BorderMessageHandler(BorderMessageModel borderMessage)

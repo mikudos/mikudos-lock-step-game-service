@@ -15,8 +15,8 @@ namespace MikudosLockStepGameService.Services.Game
     {
         private static Dictionary<ushort, GameClass> _games = new Dictionary<ushort, GameClass>();
         private static Dictionary<long, ushort> _playerGameMap = new Dictionary<long, ushort>();
-        public CommonObservable<BorderMessageModel> borderMessageO;
-        public CommonObservable<ResponseModel> responseMessageO;
+        public static CommonObservable<BorderMessageModel> borderMessageO { get; private set; } = new CommonObservable<BorderMessageModel>();
+        public static CommonObservable<ResponseModel> responseMessageO { get; private set; } = new CommonObservable<ResponseModel>();
         private IConfiguration _configuration;
         public int GameId { get; private set; }
         public int MapId { get; set; }
@@ -41,8 +41,6 @@ namespace MikudosLockStepGameService.Services.Game
         {
             this._configuration = configuration;
             MaxPlayerCount = configuration.GetValue("max_player_count", 100);
-            this.borderMessageO = new CommonObservable<BorderMessageModel>();
-            this.responseMessageO = new CommonObservable<ResponseModel>();
         }
 
         public static GameClass GetGame(ushort key, IConfiguration configuration)
@@ -157,7 +155,7 @@ namespace MikudosLockStepGameService.Services.Game
 
             msg.startTick = frames[0].tick;
             msg.frames = frames;
-            this.borderMessageO.Notify(new BorderMessageModel());
+            borderMessageO.Notify(new BorderMessageModel());
             if (_firstFrameTimeStamp <= 0)
             {
                 _firstFrameTimeStamp = _timeSinceLoaded;

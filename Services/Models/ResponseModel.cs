@@ -9,7 +9,7 @@ namespace MikudosLockStepGameService.Types
     public class ResponseModel
     {
         public long? PlayerId;
-        public HelloRequest Message;
+        public HelloReply Message;
 
         public ResponseModel()
         {
