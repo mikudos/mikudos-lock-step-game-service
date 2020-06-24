@@ -34,17 +34,11 @@ namespace MikudosLockStepGameService.Types
                 case EMessageType.Ping:
                     _handler = new PingHandler();
                     break;
-                case EMessageType.Pong:
-                    break;
                 case EMessageType.ReqMissFrame:
                     break;
                 case EMessageType.ReqMissFrameAck:
                     break;
-                case EMessageType.RepMissFrame:
-                    break;
                 case EMessageType.HashCode:
-                    break;
-                case EMessageType.FrameData:
                     break;
                 case EMessageType.PlayerInput:
                     _handler = new InputHandler(_service._configuration);

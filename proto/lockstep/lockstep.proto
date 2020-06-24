@@ -12,13 +12,16 @@ service LockStepService {
 
 enum EMessageType {
   Ping = 0;
-  Pong = 1;
-  ReqMissFrame = 2;
-  ReqMissFrameAck = 3;
-  RepMissFrame = 4;
-  HashCode = 5;
-  PlayerInput = 6;
-  FrameData = 7;
+  ReqMissFrame = 1;
+  ReqMissFrameAck = 2;
+  HashCode = 3;
+  PlayerInput = 4;
+}
+
+enum EResType {
+  Pong = 0;
+  StepResponse = 1;
+  ResMissFrame = 2;
 }
 
 enum EGameState {
@@ -50,6 +53,6 @@ message MStepReq {
 }
 
 message MStepRes {
-  EMessageType msgType = 1;
+  EResType msgType = 1;
   repeated MGameInput gameInput = 2;
 }

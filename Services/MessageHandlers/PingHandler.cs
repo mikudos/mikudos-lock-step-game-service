@@ -11,7 +11,7 @@ namespace MikudosLockStepGameService.Services.MessageHandlers
 
         public MStepRes Handle(long playerId, MStepReq message)
         {
-            return new MStepRes { MsgType = EMessageType.Pong };
+            return new MStepRes { MsgType = EResType.Pong };
         }
     }
 }

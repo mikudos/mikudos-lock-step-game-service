@@ -16,7 +16,7 @@ namespace MikudosLockStepGameService.Services.MessageHandlers
             PlayerInput input = new PlayerInput { mousePos = FixVector2.Zero, inputUV = FixVector2.Zero, isInputFire = false, isSpeedUp = false, skillId = -1 };
             IGameClass game = GameClass.GetGame(1);
 
-            return new MStepRes { MsgType = EMessageType.Pong };
+            return new MStepRes { MsgType = EResType.Pong };
         }
     }
 }
