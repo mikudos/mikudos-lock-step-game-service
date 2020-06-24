@@ -9,9 +9,9 @@ namespace MikudosLockStepGameService.Services.MessageHandlers
         {
         }
 
-        public StepResponse Handle(long playerId, StepRequest message)
+        public MStepRes Handle(long playerId, MStepReq message)
         {
-            return new StepResponse { MsgType = EMessageType.Pong };
+            return new MStepRes { MsgType = EMessageType.Pong };
         }
     }
 }

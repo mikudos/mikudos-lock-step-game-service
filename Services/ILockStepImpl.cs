@@ -10,7 +10,7 @@ namespace MikudosLockStepGameService
     public interface ILockStepImpl
     {
         IConfiguration _configuration { get; }
-        Dictionary<long, IServerStreamWriter<StepResponse>> PlayerStreams { get; }
+        Dictionary<long, IServerStreamWriter<MStepRes>> PlayerStreams { get; }
         CommonObservable<StepMessageModel> requestO { get; }
     }
 }

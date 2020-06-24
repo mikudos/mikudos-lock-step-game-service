@@ -16,23 +16,23 @@ namespace MikudosLockStepGameService
     public class LockStepImpl : LockStepService.LockStepServiceBase, ILockStepImpl
     {
         public IConfiguration _configuration { get; private set; }
-        public Dictionary<long, IServerStreamWriter<StepResponse>> PlayerStreams { get; private set; }
+        public Dictionary<long, IServerStreamWriter<MStepRes>> PlayerStreams { get; private set; }
 
         public CommonObservable<StepMessageModel> requestO { get; private set; }
 
         public LockStepImpl(IConfiguration configuration)
         {
             _configuration = configuration;
-            PlayerStreams = new Dictionary<long, IServerStreamWriter<StepResponse>>();
+            PlayerStreams = new Dictionary<long, IServerStreamWriter<MStepRes>>();
             this.requestO = new CommonObservable<StepMessageModel>();
         }
         // Server side handler of the SayHello RPC
-        public override Task<HelloReply> SayHello(HelloRequest request, ServerCallContext context)
+        public override Task<MHelloReply> SayHello(MHelloReq request, ServerCallContext context)
         {
-            return Task.FromResult(new HelloReply { Message = "Hello " + request.Name });
+            return Task.FromResult(new MHelloReply { Message = "Hello " + request.Name });
         }
 
-        public override async Task LockStepStream(IAsyncStreamReader<StepRequest> requestStream, IServerStreamWriter<StepResponse> responseStream, ServerCallContext context)
+        public override async Task LockStepStream(IAsyncStreamReader<MStepReq> requestStream, IServerStreamWriter<MStepRes> responseStream, ServerCallContext context)
         {
             var authToken = context.RequestHeaders.Single(h => h.Key == "authentication").Value;
             Console.WriteLine($"authToken:{authToken}");
@@ -54,7 +54,7 @@ namespace MikudosLockStepGameService
             CancellationTokenSource tokenSource = new CancellationTokenSource();
             CancellationToken token = tokenSource.Token;
             // Read incoming messages in a background task
-            StepRequest? lastMessageReceived = null;
+            MStepReq? lastMessageReceived = null;
             var readTask = Task.Run(async () =>
             {
                 while (!token.IsCancellationRequested && await requestStream.MoveNext(token))

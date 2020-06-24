@@ -5,9 +5,9 @@ package lockstep;
 // The greeting service definition.
 service LockStepService {
   // Sends a greeting
-  rpc SayHello(HelloRequest) returns (HelloReply) {}
-  rpc LoadingProgress(HelloRequest) returns (HelloReply) {}
-  rpc LockStepStream(stream StepRequest) returns (stream StepResponse) {}
+  rpc SayHello(MHelloReq) returns (MHelloReply) {}
+  rpc LoadingProgress(MHelloReq) returns (MHelloReply) {}
+  rpc LockStepStream(stream MStepReq) returns (stream MStepRes) {}
 }
 
 enum EMessageType {
@@ -33,23 +33,23 @@ enum EGameState {
 message MGameInput {}
 
 // The request message containing the user's name.
-message HelloRequest {
+message MHelloReq {
   EMessageType msgType = 1;
   string name = 2;
 }
 
 // The response message containing the greetings
-message HelloReply {
+message MHelloReply {
   EMessageType msgType = 1;
   string message = 2;
 }
 
-message StepRequest {
+message MStepReq {
   EMessageType msgType = 1;
   MGameInput gameInput = 2;
 }
 
-message StepResponse {
+message MStepRes {
   EMessageType msgType = 1;
   repeated MGameInput gameInput = 2;
 }
