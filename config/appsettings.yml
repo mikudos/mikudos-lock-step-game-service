@@ -1,5 +1,6 @@
 app: "mikudos_lock_step_game service"
 mongodb: "mongodb://omManager:managerpwd@dds-2ze1e3965fa544d4-pub.mongodb.rds.aliyuncs.com:3717/puzzle"
 port: 50052
+max_scene_count: 10
 frame_interval: 66
 max_player_count: 100

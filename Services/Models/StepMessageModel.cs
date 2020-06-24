@@ -9,7 +9,7 @@ namespace MikudosLockStepGameService.Types
     public class StepMessageModel
     {
         public long PlayerId;
-        public HelloRequest Message;
+        public StepRequest Message;
         private LockStepImpl _service;
         private IHandler _handler;
 
@@ -52,7 +52,7 @@ namespace MikudosLockStepGameService.Types
             }
         }
 
-        public HelloReply Handle()
+        public StepResponse Handle()
         {
             GenHandler();
             if (_handler == null)

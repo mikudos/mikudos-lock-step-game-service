@@ -11,12 +11,12 @@ namespace MikudosLockStepGameService.Services.MessageHandlers
         {
         }
 
-        public HelloReply Handle(long playerId, HelloRequest message)
+        public StepResponse Handle(long playerId, StepRequest message)
         {
             PlayerInput input = new PlayerInput { mousePos = FixVector2.Zero, inputUV = FixVector2.Zero, isInputFire = false, isSpeedUp = false, skillId = -1 };
-            GameClass game = GameClass.GetGame(1, null);
+            IGameClass game = GameClass.GetGame(1);
 
-            return new HelloReply { MsgType = EMessageType.Pong, Message = "hello" + message.Name };
+            return new StepResponse { MsgType = EMessageType.Pong };
         }
     }
 }

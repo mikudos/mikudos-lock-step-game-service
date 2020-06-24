@@ -13,7 +13,7 @@ namespace MikudosLockStepGameService.Services.Game
 {
     public class GameClass : BaseLogger, IGameClass
     {
-        public static Dictionary<ushort, GameClass> AllGames { get; } = new Dictionary<ushort, GameClass>();
+        public static Dictionary<ushort, IGameClass> AllGames { get; } = new Dictionary<ushort, IGameClass>();
         public static Dictionary<long, ushort> PlayerGameMap = new Dictionary<long, ushort>();
         public static CommonObservable<BorderMessageModel> borderMessageO { get; private set; } = new CommonObservable<BorderMessageModel>();
         public static CommonObservable<ResponseModel> responseMessageO { get; private set; } = new CommonObservable<ResponseModel>();
@@ -43,16 +43,24 @@ namespace MikudosLockStepGameService.Services.Game
             MaxPlayerCount = configuration.GetValue("max_player_count", 100);
         }
 
-        public static GameClass GetGame(ushort key, IConfiguration configuration)
+        public static IGameClass GetGame(ushort key)
         {
-            if (AllGames[key] == null && configuration == null)
-            {
-                throw new NullConfigurationException();
-            }
             if (AllGames[key] == null)
             {
-                AllGames[key] = new GameClass(configuration) { GameId = key };
+                throw new SceneNotExistsException();
             }
+            return AllGames[key];
+        }
+
+        public IGameClass DoCreate(IConfiguration configuration)
+        {
+            var _key = AllGames.Count;
+            if (_key >= _configuration.GetValue<int>("max_scene_count", ushort.MaxValue))
+            {
+                throw new GameOverloadException();
+            }
+            ushort key = (ushort)_key;
+            AllGames[key] = new GameClass(configuration) { GameId = key };
             return AllGames[key];
         }
 

@@ -7,7 +7,7 @@ service LockStepService {
   // Sends a greeting
   rpc SayHello(HelloRequest) returns (HelloReply) {}
   rpc LoadingProgress(HelloRequest) returns (HelloReply) {}
-  rpc LockStepStream(stream HelloRequest) returns (stream HelloReply) {}
+  rpc LockStepStream(stream StepRequest) returns (stream StepResponse) {}
 }
 
 enum EMessageType {

@@ -2,6 +2,7 @@ using System;
 using System.Threading.Tasks;
 using Grpc.Core;
 using Lockstep;
+using Grpc.Health.V1;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Configuration;
 
@@ -17,11 +18,15 @@ namespace MikudosLockStepGameService
                 .AddYamlFile("config/appsettings.yml", optional: true)
                 .AddJsonFile($"config/appsettings.{env}.yml", optional: true);
             IConfiguration _conf = builder.Build();
+            var healthService = new HealthImpl();
             var lockStepService = new LockStepImpl(_conf);
             int Port = _conf.GetValue<int>("port", 50051);
             Server server = new Server
             {
-                Services = { LockStepService.BindService(lockStepService) },
+                Services = {
+                    LockStepService.BindService(lockStepService),
+                    Health.BindService(healthService)
+                },
                 Ports = { new ServerPort("localhost", Port, ServerCredentials.Insecure) }
             };
             StepService stepService = new StepService(lockStepService);

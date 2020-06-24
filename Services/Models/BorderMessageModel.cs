@@ -9,7 +9,7 @@ namespace MikudosLockStepGameService.Types
     public class BorderMessageModel
     {
         public ushort GameId;
-        public HelloReply Message;
+        public StepResponse Message;
 
         public BorderMessageModel()
         {

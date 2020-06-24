@@ -8,6 +8,7 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Configuration;
 using MikudosLockStepGameService.Types;
 using MikudosLockStepGameService.Rx;
+using MikudosLockStepGameService.Services.Exceptions;
 using Lockstep;
 
 namespace MikudosLockStepGameService
@@ -15,14 +16,14 @@ namespace MikudosLockStepGameService
     public class LockStepImpl : LockStepService.LockStepServiceBase, ILockStepImpl
     {
         public IConfiguration _configuration { get; private set; }
-        public Dictionary<long, IServerStreamWriter<HelloReply>> PlayerStreams { get; private set; }
+        public Dictionary<long, IServerStreamWriter<StepResponse>> PlayerStreams { get; private set; }
 
         public CommonObservable<StepMessageModel> requestO { get; private set; }
 
         public LockStepImpl(IConfiguration configuration)
         {
             _configuration = configuration;
-            PlayerStreams = new Dictionary<long, IServerStreamWriter<HelloReply>>();
+            PlayerStreams = new Dictionary<long, IServerStreamWriter<StepResponse>>();
             this.requestO = new CommonObservable<StepMessageModel>();
         }
         // Server side handler of the SayHello RPC
@@ -31,7 +32,7 @@ namespace MikudosLockStepGameService
             return Task.FromResult(new HelloReply { Message = "Hello " + request.Name });
         }
 
-        public override async Task LockStepStream(IAsyncStreamReader<HelloRequest> requestStream, IServerStreamWriter<HelloReply> responseStream, ServerCallContext context)
+        public override async Task LockStepStream(IAsyncStreamReader<StepRequest> requestStream, IServerStreamWriter<StepResponse> responseStream, ServerCallContext context)
         {
             var authToken = context.RequestHeaders.Single(h => h.Key == "authentication").Value;
             Console.WriteLine($"authToken:{authToken}");
@@ -43,8 +44,7 @@ namespace MikudosLockStepGameService
             // TODO: check if authToken is validate
             if (playerID == 0L)
             {
-                await responseStream.WriteAsync(new HelloReply { Message = "Authentication Error" });
-                return;
+                throw new AuthenticationException();
             }
             else if (!PlayerStreams.ContainsKey(playerID))
             {
@@ -54,7 +54,7 @@ namespace MikudosLockStepGameService
             CancellationTokenSource tokenSource = new CancellationTokenSource();
             CancellationToken token = tokenSource.Token;
             // Read incoming messages in a background task
-            HelloRequest? lastMessageReceived = null;
+            StepRequest? lastMessageReceived = null;
             var readTask = Task.Run(async () =>
             {
                 while (!token.IsCancellationRequested && await requestStream.MoveNext(token))

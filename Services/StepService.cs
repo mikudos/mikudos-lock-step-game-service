@@ -36,7 +36,6 @@ namespace MikudosLockStepGameService
         private DateTime _startUpTimeStamp;
         private double _deltaTime;
         private double _timeSinceStartUp;
-        private IGameClass _game;
         public StepService(ILockStepImpl lockStepService)
         {
             this._lockStepService = lockStepService;
@@ -52,12 +51,8 @@ namespace MikudosLockStepGameService
 
         private async void ResponseMessageHandler(ResponseModel responseMessage)
         {
-            foreach (var (pid, stream) in _lockStepService.PlayerStreams)
-            {
-                if (pid != responseMessage.PlayerId)
-                    continue;
-                await stream.WriteAsync(responseMessage.Message);
-            }
+            if (responseMessage.PlayerId == 0) return;
+            await _lockStepService.PlayerStreams[responseMessage.PlayerId].WriteAsync(responseMessage.Message);
         }
 
         private async void BorderMessageHandler(BorderMessageModel borderMessage)
@@ -105,7 +100,10 @@ namespace MikudosLockStepGameService
             var fDeltaTime = (float)_deltaTime;
             var fTimeSinceStartUp = (float)_timeSinceStartUp;
             // System.Console.WriteLine("deltatime over, do update");
-            // _game?.DoUpdate(fDeltaTime);
+            foreach (var (gid, _game) in GameClass.AllGames)
+            {
+                _game?.DoUpdate(fDeltaTime);
+            }
         }
 
         public async Task Start()

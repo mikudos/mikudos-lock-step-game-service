@@ -8,8 +8,8 @@ namespace MikudosLockStepGameService.Types
     [DebuggerDisplay("{" + nameof(GetDebuggerDisplay) + "(),nq}")]
     public class ResponseModel
     {
-        public long? PlayerId;
-        public HelloReply Message;
+        public long PlayerId;
+        public StepResponse Message;
 
         public ResponseModel()
         {
