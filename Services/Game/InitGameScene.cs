@@ -25,6 +25,7 @@ namespace MikudosLockStepGameService.Services.Game
         {
             if (waitingPlayerIds.Count >= configuration.GetValue<int>("scene_player_count", 2))
             {
+
                 return true;
             } else
             {
