@@ -58,10 +58,14 @@ namespace MikudosLockStepGameService
 
         private async void StepMessageHandler(StepMessageModel stepMessage)
         {
+            var mmstream = new MemoryStream();
+            var stream1 = new Google.Protobuf.CodedOutputStream(mmstream);
             byte[] byteArr = new byte[Google.Protobuf.CodedOutputStream.DefaultBufferSize];
             var stream = new Google.Protobuf.CodedOutputStream(byteArr);
             stepMessage.Message.WriteTo(stream);
+            stepMessage.Message.WriteTo(stream1);
             stream.Dispose();
+            stream1.Dispose();
 
             System.Console.WriteLine($"on subscribe stepMessage: {stepMessage}");
             long playerId = stepMessage.PlayerId;
