@@ -5,7 +5,7 @@ using Lockstep;
 
 namespace MikudosLockStepGameService.Services.MessageHandlers
 {
-    public class BeginHandler: IHandler
+    public class BeginHandler : IHandler
     {
         private IConfiguration _configuration;
         private GameClass _game;
@@ -18,7 +18,7 @@ namespace MikudosLockStepGameService.Services.MessageHandlers
         {
             InitGameScene.AddWaitingPlayerId(playerId);
             InitGameScene.CheckState(_configuration);
-            return new MStepRes { MsgType = EResType.Pong };
+            return new MStepRes { ID = message.ID, MsgType = EResType.Pong };
         }
     }
 }

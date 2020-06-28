@@ -25,6 +25,7 @@ enum EResType {
   StepResponse = 1;
   ResMissFrame = 2;
   AllReady = 3;
+  ProgressResponse = 4;
 }
 
 enum EGameState {
@@ -74,12 +75,14 @@ message MHelloReply {
 }
 
 message MStepReq {
-  EMessageType MsgType = 1;
-  MPlayerGameInput GameInput = 2;
+  uint32 ID = 1;
+  EMessageType MsgType = 2;
+  MPlayerGameInput GameInput = 3;
 }
 
 message MStepRes {
-  EResType MsgType = 1;
-  MMultiFrames Frames = 2;
-  MServerFrame Frame = 3;
+  uint32 ID = 1;
+  EResType MsgType = 2;
+  MMultiFrames Frames = 3;
+  MServerFrame Frame = 4;
 }

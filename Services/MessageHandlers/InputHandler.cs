@@ -35,7 +35,7 @@ namespace MikudosLockStepGameService.Services.MessageHandlers
             IGameClass game = GameClass.GetGame(gameId);
             game.HandlePlayerInput(input);
 
-            return new MStepRes { MsgType = EResType.Pong };
+            return new MStepRes { ID = message.ID, MsgType = EResType.Pong };
         }
     }
 }

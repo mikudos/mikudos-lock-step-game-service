@@ -13,7 +13,7 @@ namespace MikudosLockStepGameService.Services.MessageHandlers
 
         public MStepRes Handle(long playerId, MStepReq message)
         {
-            return new MStepRes { MsgType = EResType.Pong };
+            return new MStepRes { ID = message.ID, MsgType = EResType.Pong };
         }
     }
 }
