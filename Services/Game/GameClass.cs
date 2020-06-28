@@ -162,7 +162,7 @@ namespace MikudosLockStepGameService.Services.Game
 
             msg.startTick = frames[0].tick;
             msg.frames = frames;
-            // FIXME: set response
+            // FIXME: set response, message should with ServerFrames or PlayerGameInputs
             borderMessageO.Notify(new BorderMessageModel() { GameId = this.GameId, Message = new MStepRes() { MsgType = EResType.StepResponse } });
             if (_firstFrameTimeStamp <= 0)
             {
