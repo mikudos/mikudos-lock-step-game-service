@@ -19,6 +19,6 @@ namespace MikudosLockStepGameService.Services.Game
         void DoDestroy();
         void DoStart(int gameType, int mapId, PlayerModel[] playerInfos, string gameHash);
         void DoUpdate(float deltaTime);
-        ushort GetGameIdWithPlayerId(long playerId);
+        void HandlePlayerInput(Msg_PlayerInput input);
     }
 }

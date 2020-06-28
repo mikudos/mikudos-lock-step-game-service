@@ -42,6 +42,8 @@ namespace MikudosLockStepGameService.Services.Models
                     break;
                 case EMessageType.HashCode:
                     break;
+                case EMessageType.LoadingProgress:
+                    break;
                 case EMessageType.PlayerInput:
                     _handler = new InputHandler(_service._configuration);
                     break;

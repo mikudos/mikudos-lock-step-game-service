@@ -31,6 +31,7 @@ namespace MikudosLockStepGameService.Services.Game
         private float _timeSinceLoaded;
         private float _firstFrameTimeStamp = 0;
         private float _waitTimer = 0;
+        private List<byte> _allNeedWaitInputPlayerIds;
         public long _gameStartTimestampMs = -1;
         public int _ServerTickDealy = 0;
         public int _tickSinceGameStart =>
@@ -125,6 +126,25 @@ namespace MikudosLockStepGameService.Services.Game
             //File.WriteAllBytes(path, bytes);
         }
 
+        public void HandlePlayerInput(Msg_PlayerInput input)
+        {
+            if (input.Tick < Tick)
+            {
+                return;
+            }
+
+            var frame = GetOrCreateFrame(input.Tick);
+
+            var id = input.ActorId;
+            if (!_allNeedWaitInputPlayerIds.Contains(id))
+            {
+                _allNeedWaitInputPlayerIds.Add(id);
+            }
+
+            frame.Inputs[id] = input;
+            _CheckBorderServerFrame(false);
+        }
+
         private bool _CheckBorderServerFrame(bool isForce = false)
         {
             if (State != EGameState.Playing) return false;
@@ -206,7 +226,7 @@ namespace MikudosLockStepGameService.Services.Game
             return frame;
         }
 
-        public ushort GetGameIdWithPlayerId(long playerId)
+        public static ushort GetGameIdWithPlayerId(long playerId)
         {
             return PlayerGameMap[playerId];
         }

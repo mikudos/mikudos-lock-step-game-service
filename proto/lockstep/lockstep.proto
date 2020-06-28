@@ -17,6 +17,7 @@ enum EMessageType {
   HashCode = 3;
   PlayerInput = 4;
   Begin = 5;
+  LoadingProgress = 6;
 }
 
 enum EResType {
@@ -74,7 +75,7 @@ message MHelloReply {
 
 message MStepReq {
   EMessageType MsgType = 1;
-  MGameInput GameInput = 2;
+  MPlayerGameInput GameInput = 2;
 }
 
 message MStepRes {
