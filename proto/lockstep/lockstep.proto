@@ -55,6 +55,11 @@ message MServerFrame {
   repeated MPlayerGameInput PlayerGameInputs = 2;
 }
 
+message MMultiFrames {
+  int32 StartTick = 1;
+  repeated MServerFrame ServerFrames = 2;
+}
+
 // The request message containing the user's name.
 message MHelloReq {
   EMessageType MsgType = 1;
@@ -74,6 +79,6 @@ message MStepReq {
 
 message MStepRes {
   EResType MsgType = 1;
-  repeated MServerFrame ServerFrames = 2;
-  repeated MPlayerGameInput PlayerGameInputs = 3;
+  MMultiFrames Frames = 2;
+  MServerFrame Frame = 3;
 }

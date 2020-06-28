@@ -110,7 +110,7 @@ namespace MikudosLockStepGameService.Services.Game
                 Logger.Debug.Assert(frames[i] != null, "!!!!!!!!!!!!!!!!!");
             }
 
-            msg.startTick = frames[0].tick;
+            msg.StartTick = frames[0].tick;
             msg.frames = frames;
             var path = Path.Combine(AppDomain.CurrentDomain.BaseDirectory,
                 "../Record/" + System.DateTime.Now.ToString("yyyyMMddHHmmss") + "_" + GameType + "_" + GameId +
@@ -160,10 +160,10 @@ namespace MikudosLockStepGameService.Services.Game
                 frames[count - i - 1] = _allHistoryFrames[Tick - i];
             }
 
-            msg.startTick = frames[0].tick;
+            msg.StartTick = frames[0].tick;
             msg.frames = frames;
             // FIXME: set response, message should with ServerFrames or PlayerGameInputs
-            borderMessageO.Notify(new BorderMessageModel() { GameId = this.GameId, Message = new MStepRes() { MsgType = EResType.StepResponse } });
+            borderMessageO.Notify(new BorderMessageModel() { GameId = this.GameId, Message = new MStepRes() { MsgType = EResType.StepResponse, Frames = msg.TransformToMMultiFrames() } });
             if (_firstFrameTimeStamp <= 0)
             {
                 _firstFrameTimeStamp = _timeSinceLoaded;

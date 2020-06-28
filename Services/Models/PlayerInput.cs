@@ -13,7 +13,7 @@ namespace MikudosLockStepGameService.Services.Models
         public bool isInputFire;
         public int skillId;
         public bool isSpeedUp;
-        private MGameInput _realInput;
+        private MGameInput _gameInput;
 
         //public override void Serialize(Serializer writer){
         //    writer.Write(mousePos);
@@ -25,7 +25,7 @@ namespace MikudosLockStepGameService.Services.Models
 
         public PlayerInput(MGameInput input)
         {
-            _realInput = input;
+            _gameInput = input;
             isInputFire = input.IsInputFire;
             skillId = input.SkillId;
             isSpeedUp = input.IsSpeedUp;
@@ -89,7 +89,7 @@ namespace MikudosLockStepGameService.Services.Models
 
         public MGameInput GetGameInput()
         {
-            return this._realInput;
+            return this._gameInput;
         }
     }
     //#endif

@@ -1,6 +1,6 @@
 ﻿using System;
-using MikudosLockStepGameService.Services.Models;
-namespace MikudosLockStepGameService.Services.Game
+using Lockstep;
+namespace MikudosLockStepGameService.Services.Models
 {
     [System.Serializable]
     public partial class ServerFrame
@@ -52,6 +52,16 @@ namespace MikudosLockStepGameService.Services.Game
                 }
             }
             return true;
+        }
+
+        public MServerFrame TransformToMServerFrame()
+        {
+            MServerFrame frame = new MServerFrame() { Tick = this.tick };
+            foreach (var msgPlayerInput in this.Inputs)
+            {
+                frame.PlayerGameInputs.Add(msgPlayerInput.TransformToPlayerGameInput());
+            }
+            return frame;
         }
     }
 }
