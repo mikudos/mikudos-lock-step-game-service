@@ -2,7 +2,7 @@ using MikudosLockStepGameService.Util;
 using MikudosLockStepGameService.Services.Game;
 using Lockstep;
 
-namespace MikudosLockStepGameService.Types
+namespace MikudosLockStepGameService.Services.Models
 {
     public class PlayerModel : BaseRecyclable
     {

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using Lockstep;
 
-namespace MikudosLockStepGameService.Services.Game
+namespace MikudosLockStepGameService.Services.Models
 {
     //#if DEBUG_SHOW_INPUT
     public partial class PlayerInput
@@ -13,6 +13,7 @@ namespace MikudosLockStepGameService.Services.Game
         public bool isInputFire;
         public int skillId;
         public bool isSpeedUp;
+        private MGameInput _realInput;
 
         //public override void Serialize(Serializer writer){
         //    writer.Write(mousePos);
@@ -24,6 +25,7 @@ namespace MikudosLockStepGameService.Services.Game
 
         public PlayerInput(MGameInput input)
         {
+            _realInput = input;
             isInputFire = input.IsInputFire;
             skillId = input.SkillId;
             isSpeedUp = input.IsSpeedUp;
@@ -83,6 +85,11 @@ namespace MikudosLockStepGameService.Services.Game
                 skillId = tThis.skillId,
                 isSpeedUp = tThis.isSpeedUp,
             };
+        }
+
+        public MGameInput GetGameInput()
+        {
+            return this._realInput;
         }
     }
     //#endif

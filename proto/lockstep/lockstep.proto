@@ -50,6 +50,11 @@ message MPlayerGameInput {
   bool IsMiss = 4;
 }
 
+message MServerFrame {
+  int32 Tick = 1;
+  repeated MPlayerGameInput PlayerGameInputs = 2;
+}
+
 // The request message containing the user's name.
 message MHelloReq {
   EMessageType MsgType = 1;
@@ -69,5 +74,6 @@ message MStepReq {
 
 message MStepRes {
   EResType MsgType = 1;
-  repeated MPlayerGameInput PlayerGameInputs = 2;
+  repeated MServerFrame ServerFrames = 2;
+  repeated MPlayerGameInput PlayerGameInputs = 3;
 }

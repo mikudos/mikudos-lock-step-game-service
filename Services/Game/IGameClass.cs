@@ -1,16 +1,18 @@
-﻿using MikudosLockStepGameService.Types;
+﻿using MikudosLockStepGameService.Services.Models;
+using Lockstep;
 
 namespace MikudosLockStepGameService.Services.Game
 {
     public interface IGameClass
     {
-        int GameId { get; }
+        ushort GameId { get; }
         int MapId { get; set; }
         int GameType { get; set; }
         string GameHash { get; set; }
         string Name { get; set; }
         int Tick { get; }
         int Seed { get; set; }
+        EGameState State { get; }
         PlayerModel[] Players { get; }
         int _tickSinceGameStart { get; }
 

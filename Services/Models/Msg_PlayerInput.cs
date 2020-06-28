@@ -1,12 +1,13 @@
 ﻿using System;
+using Lockstep;
 using System.Collections.Generic;
+using MikudosLockStepGameService.Services.Models;
 
-namespace MikudosLockStepGameService.Services.Game
+namespace MikudosLockStepGameService.Services.Models
 {
     [System.Serializable]
     public partial class Msg_PlayerInput
     {
-        public byte[] InputDatas; //real data
         public bool IsMiss;
         public byte ActorId;
         public int Tick;
@@ -58,6 +59,16 @@ namespace MikudosLockStepGameService.Services.Game
         public override int GetHashCode()
         {
             return (int)(ActorId << 24 & Tick);
+        }
+
+        public MPlayerGameInput TransformToPlayerGameInput()
+        {
+            var playerGameInput = new MPlayerGameInput() { ActorId = this.ActorId, Tick = this.Tick, IsMiss = this.IsMiss };
+            foreach (var c in this.Commands)
+            {
+                playerGameInput.Commands.Add(c.GetGameInput());
+            }
+            return playerGameInput;
         }
     }
 }

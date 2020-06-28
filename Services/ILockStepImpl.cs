@@ -3,7 +3,7 @@ using Grpc.Core;
 using Lockstep;
 using Microsoft.Extensions.Configuration;
 using MikudosLockStepGameService.Rx;
-using MikudosLockStepGameService.Types;
+using MikudosLockStepGameService.Services.Models;
 
 namespace MikudosLockStepGameService
 {

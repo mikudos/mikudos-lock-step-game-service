@@ -1,12 +1,12 @@
 ﻿using System;
+using MikudosLockStepGameService.Services.Models;
 namespace MikudosLockStepGameService.Services.Game
 {
     [System.Serializable]
     public partial class ServerFrame
     {
-        public byte[] inputDatas; //包含玩家的输入& 游戏输入
         public int tick;
-        public Msg_PlayerInput[] _inputs;
+        private Msg_PlayerInput[] _inputs;
 
         public Msg_PlayerInput[] Inputs
         {
@@ -14,7 +14,6 @@ namespace MikudosLockStepGameService.Services.Game
             set
             {
                 _inputs = value;
-                inputDatas = null;
             }
         }
 
@@ -26,16 +25,7 @@ namespace MikudosLockStepGameService.Services.Game
             set
             {
                 _serverInputs = value;
-                inputDatas = null;
             }
-        }
-
-        public override string ToString()
-        {
-            var count = (inputDatas == null) ? 0 : inputDatas.Length;
-            return
-                $"t:{tick} " +
-                $"inputNum:{count}";
         }
 
         public override bool Equals(object obj)

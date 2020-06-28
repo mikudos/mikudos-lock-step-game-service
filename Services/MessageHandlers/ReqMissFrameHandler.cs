@@ -1,11 +1,11 @@
 ﻿using System;
 using Lockstep;
 using Microsoft.Extensions.Configuration;
-using MikudosLockStepGameService.Types;
+using MikudosLockStepGameService.Services.Models;
 
 namespace MikudosLockStepGameService.Services.MessageHandlers
 {
-    public class ReqMissFrameHandler: IHandler
+    public class ReqMissFrameHandler : IHandler
     {
         public ReqMissFrameHandler(IConfiguration configuration)
         {

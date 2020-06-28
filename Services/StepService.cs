@@ -16,7 +16,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Lockstep;
 using Microsoft.Extensions.Configuration;
-using MikudosLockStepGameService.Types;
+using MikudosLockStepGameService.Services.Models;
 using MikudosLockStepGameService.Rx;
 using MikudosLockStepGameService.Services.MessageHandlers;
 using MikudosLockStepGameService.Services.Game;
@@ -58,15 +58,12 @@ namespace MikudosLockStepGameService
 
         private async void StepMessageHandler(StepMessageModel stepMessage)
         {
-            var mmstream = new MemoryStream();
-            var stream1 = new Google.Protobuf.CodedOutputStream(mmstream);
-            byte[] byteArr = new byte[Google.Protobuf.CodedOutputStream.DefaultBufferSize];
-            var stream = new Google.Protobuf.CodedOutputStream(byteArr);
-            stepMessage.Message.WriteTo(stream);
-            stepMessage.Message.WriteTo(stream1);
-            stream.Dispose();
-            stream1.Dispose();
-
+            var byteArr = stepMessage.SerializeMessage();
+            System.Console.WriteLine($"resaved message in byteArr:");
+            foreach (var b in byteArr)
+            {
+                System.Console.Write(b);
+            }
             System.Console.WriteLine($"on subscribe stepMessage: {stepMessage}");
             long playerId = stepMessage.PlayerId;
             var reply = stepMessage.Handle();

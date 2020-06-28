@@ -5,7 +5,7 @@ using System.Collections.Generic;
 using Microsoft.Extensions.Configuration;
 using MikudosLockStepGameService.Rx;
 using MikudosLockStepGameService.Util;
-using MikudosLockStepGameService.Types;
+using MikudosLockStepGameService.Services.Models;
 using MikudosLockStepGameService.Services.Exceptions;
 using MikudosLockStepGameService.Services.Logger;
 
@@ -17,14 +17,14 @@ namespace MikudosLockStepGameService.Services.Game
         public static Dictionary<long, ushort> PlayerGameMap = new Dictionary<long, ushort>();
         public static CommonObservable<BorderMessageModel> borderMessageO { get; private set; } = new CommonObservable<BorderMessageModel>();
         private IConfiguration _configuration;
-        public int GameId { get; private set; }
+        public ushort GameId { get; private set; }
         public int MapId { get; set; }
         public int GameType { get; set; }
         public string GameHash { get; set; }
         public string Name { get; set; }
         public int Tick { get; private set; } = 0;
         public int Seed { get; set; }
-        public EGameState State = EGameState.Idle;
+        public EGameState State { get; private set; } = EGameState.Idle;
         private Dictionary<long, byte> _userId2LocalId = new Dictionary<long, byte>();
         public PlayerModel[] Players { get; private set; }
         private int MaxPlayerCount;
@@ -162,7 +162,8 @@ namespace MikudosLockStepGameService.Services.Game
 
             msg.startTick = frames[0].tick;
             msg.frames = frames;
-            borderMessageO.Notify(new BorderMessageModel());
+            // FIXME: set response
+            borderMessageO.Notify(new BorderMessageModel() { GameId = this.GameId, Message = new MStepRes() { MsgType = EResType.StepResponse } });
             if (_firstFrameTimeStamp <= 0)
             {
                 _firstFrameTimeStamp = _timeSinceLoaded;

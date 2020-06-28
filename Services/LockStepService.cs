@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using Grpc.Core;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Configuration;
-using MikudosLockStepGameService.Types;
+using MikudosLockStepGameService.Services.Models;
 using MikudosLockStepGameService.Rx;
 using MikudosLockStepGameService.Services.Exceptions;
 using Lockstep;

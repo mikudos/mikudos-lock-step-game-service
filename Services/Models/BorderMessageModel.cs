@@ -3,7 +3,7 @@ using System.Diagnostics;
 using Lockstep;
 using MikudosLockStepGameService.Services.MessageHandlers;
 
-namespace MikudosLockStepGameService.Types
+namespace MikudosLockStepGameService.Services.Models
 {
     [DebuggerDisplay("{" + nameof(GetDebuggerDisplay) + "(),nq}")]
     public class BorderMessageModel

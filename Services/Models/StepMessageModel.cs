@@ -1,9 +1,10 @@
 using System;
 using System.Diagnostics;
+using System.IO;
 using Lockstep;
 using MikudosLockStepGameService.Services.MessageHandlers;
 
-namespace MikudosLockStepGameService.Types
+namespace MikudosLockStepGameService.Services.Models
 {
     [DebuggerDisplay("{" + nameof(GetDebuggerDisplay) + "(),nq}")]
     public class StepMessageModel
@@ -58,6 +59,25 @@ namespace MikudosLockStepGameService.Types
                 return null;
             }
             return _handler.Handle(PlayerId, Message);
+        }
+
+        public byte[] SerializeMessage()
+        {
+            var mmstream = new MemoryStream(this.Message.CalculateSize());
+            var stream = new Google.Protobuf.CodedOutputStream(mmstream);
+            this.Message.WriteTo(stream);
+            System.Console.WriteLine($"len: {mmstream.CanRead}, {mmstream.CanWrite}, {mmstream.Capacity}, {this.Message.CalculateSize()}, {mmstream.GetBuffer()}");
+            // read from stream
+            var byteArray = mmstream.GetBuffer();
+            // dispose after use
+            stream.Dispose();
+            // return byteArr;
+            return byteArray;
+        }
+
+        public void SetMessageFromDeserialize(byte[] data)
+        {
+            this.Message = MStepReq.Parser.ParseFrom(data);
         }
     }
 }

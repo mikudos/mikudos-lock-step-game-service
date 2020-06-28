@@ -1,6 +1,7 @@
 ﻿using System;
 using Lockstep;
 using Microsoft.Extensions.Configuration;
+using MikudosLockStepGameService.Services.Models;
 using MikudosLockStepGameService.Services.Game;
 
 namespace MikudosLockStepGameService.Services.MessageHandlers
