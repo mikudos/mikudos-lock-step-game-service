@@ -36,7 +36,7 @@ namespace MikudosLockStepGameService.Services.Models
                     _handler = new PingHandler();
                     break;
                 case EMessageType.ReqMissFrame:
-                    _handler = new PingHandler();
+                    _handler = new ReqMissFrameHandler(_service._configuration);
                     break;
                 case EMessageType.ReqMissFrameAck:
                     break;
