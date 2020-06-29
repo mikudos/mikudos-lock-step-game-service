@@ -69,6 +69,7 @@ namespace MikudosLockStepGameService
                     // }
                 }
                 PlayerStreams.Remove(playerID);
+                this.requestO.Notify(new StepMessageModel(this) { PlayerId = playerID, Message = new MStepReq() { MsgType = EMessageType.Leave } });
                 Console.WriteLine($"close client connection: {playerID}");
                 context.CancellationToken.ThrowIfCancellationRequested();
                 return "";

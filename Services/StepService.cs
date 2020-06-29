@@ -11,16 +11,12 @@
  * 
  */
 using System;
-using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
-using Lockstep;
 using Microsoft.Extensions.Configuration;
 using MikudosLockStepGameService.Services.Models;
 using MikudosLockStepGameService.Rx;
-using MikudosLockStepGameService.Services.MessageHandlers;
 using MikudosLockStepGameService.Services.Game;
-using System.IO;
 
 namespace MikudosLockStepGameService
 {
@@ -67,7 +63,7 @@ namespace MikudosLockStepGameService
             System.Console.WriteLine($"on subscribe stepMessage: {stepMessage}");
             long playerId = stepMessage.PlayerId;
             var reply = stepMessage.Handle();
-            if (reply == null)
+            if (reply == null || _lockStepService.PlayerStreams[playerId] == null)
             {
                 return;
             }

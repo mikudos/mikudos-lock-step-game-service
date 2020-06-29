@@ -37,6 +37,22 @@ namespace MikudosLockStepGameService.Services.Game
         public int _tickSinceGameStart =>
             (int)((LTime.realtimeSinceStartupMS - _gameStartTimestampMs) / _configuration.GetValue<int>("frame_interval", 100) / 1000.0f);
         private List<ServerFrame> _allHistoryFrames = new List<ServerFrame>(); //所有的历史帧
+        public int CurPlayerCount
+        {
+            get
+            {
+                int count = 0;
+                foreach (var player in Players)
+                {
+                    if (player != null)
+                    {
+                        count++;
+                    }
+                }
+
+                return count;
+            }
+        }
         public GameClass(IConfiguration configuration)
         {
             this._configuration = configuration;
@@ -230,5 +246,59 @@ namespace MikudosLockStepGameService.Services.Game
         {
             return PlayerGameMap[playerId];
         }
+
+        #region net status
+
+        //net status
+        public void OnPlayerReconnect(PlayerModel player)
+        {
+            player.LocalId = _userId2LocalId[player.UserId];
+            Players[player.LocalId] = player;
+        }
+
+        public void OnPlayerDisconnect(PlayerModel player)
+        {
+            Log($"Player{player.UserId} OnDisconnect room {GameId}");
+            RemovePlayer(player);
+        }
+
+        public void OnPlayerLeave(long userId)
+        {
+            if (_userId2LocalId.TryGetValue(userId, out var localId))
+            {
+                var player = Players[localId];
+                if (player != null)
+                {
+                    OnPlayerLeave(player);
+                }
+            }
+        }
+
+        public void OnPlayerLeave(PlayerModel player)
+        {
+            RemovePlayer(player);
+            _userId2LocalId.Remove(player.UserId); //同时还需要彻底的移除记录 避免玩家重连
+            Log($"Player{player.UserId} OnPlayerLeave room {GameId}");
+        }
+
+        void RemovePlayer(PlayerModel player)
+        {
+            if (Players[player.LocalId] == null) return;
+            Players[player.LocalId] = null;
+
+            var curCount = CurPlayerCount;
+            if (curCount == 0)
+            {
+                Log("All players left, stopping current simulation...");
+                State = EGameState.Idle;
+                AllGames.Remove(GetGameIdWithPlayerId(player.UserId));
+            }
+            else
+            {
+                Log(curCount + " players remaining.");
+            }
+        }
+
+        #endregion
     }
 }

@@ -51,6 +51,9 @@ namespace MikudosLockStepGameService.Services.Models
                 case EMessageType.Begin:
                     _handler = new BeginHandler(_service._configuration);
                     break;
+                case EMessageType.Leave:
+                    _handler = new LeaveHandler(_service._configuration);
+                    break;
             }
         }
 

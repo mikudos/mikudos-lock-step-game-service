@@ -18,6 +18,7 @@ enum EMessageType {
   PlayerInput = 4;
   Begin = 5;
   LoadingProgress = 6;
+  Leave = 7;
 }
 
 enum EResType {
